@@ -1,5 +1,7 @@
 #include "FunctionSolver/Function.h"
 #include "FunctionSolver/FunctionSolver.h"
+#include "LinearAlgebra/Matrix.h"
+#include "LinearAlgebra/Vector.h"
 #include "common/util.h"
 #include <cmath>
 
@@ -137,6 +139,84 @@ int main()
     end_timer();
     delete sSolver1;
 
+    unsigned int len = 5;
+    Vector v1(len);
+    for(unsigned int i = 0; i < len; i++)
+	v1[i] = i;
+    cout << " v1 : " << endl;
+    v1.print();
+
+    Vector v3(len);
+    for(unsigned int i = 0; i < len; i++)
+	v3[i] = i + 3;
+    cout << " v3 : " << endl;
+    v3.print();
+
+    Vector v2(v1);
+    cout << " v2 after copy v1: " << endl;
+    v2.print();
+
+    v2 = v3;
+    cout << " v2 after assigned by v3: " << endl;
+    v2.print();
+
+    cout << " v2 product v3: " << endl;
+    cout << v2.dot(v3) << endl;
+    assert(v2.dot(v3) == 135);
+
+    cout << " v2 times 2: " << endl;
+    cout << v2 * 2 << endl;
+    cout << " v2 times 4: " << endl;
+    cout << (2 * v2) * 2 << endl;
+    cout << 2 * (2 * v2) << endl;
+    cout << " v2 times 22.44: " << endl;
+    cout << (2 * v2) * 11.22 << endl;
+    cout << 11.22 * (2 * v2) << endl;
+
+    cout << " v2 times 22.44 + v3: " << endl;
+    cout << ((2 * v2) * 11.22) + v3 << endl;
+
+    cout << " v2 times 22.44 + v3: " << endl;
+    cout << ((2 * v2) * 11.22) - v3 << endl;
+
+    cout << " v2 == v3: " << endl;
+    cout << v2 << endl;
+    cout << v3 << endl;
+    assert((v2 == v3));
+
+    Vector v5(5);
+    v5 = v2.transpose();
+    cout << "transpose v2 " << endl;
+    cout << v5 << endl;
+
+    cout << "3 rows and 4 cols    3 X 4" << endl;
+    Matrix m1(3,4);
+    //Matrix m2(-3,-4);
+    for(int i = 0; i < 3; i++)
+    {
+	for(int j = 0; j < 4; j++)
+	{
+	    m1[i][j] = i + j;
+	}
+    }
+
+    cout << m1;
+
+    assert(m1[0][0] == 0);
+    assert(m1[0][1] == 1);
+    assert(m1[0][2] == 2);
+    assert(m1[0][3] == 3);
+    assert(m1[1][0] == 1);
+    assert(m1[1][1] == 2);
+    assert(m1[1][2] == 3);
+    assert(m1[1][3] == 4);
+    assert(m1[2][0] == 2);
+    assert(m1[2][1] == 3);
+    assert(m1[2][2] == 4);
+    assert(m1[2][3] == 5);
+
+    cout << m1.transpose() << endl;
+    
     return 0;
 }
 

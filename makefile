@@ -1,9 +1,9 @@
 CC = g++
 FLAG = -c 
-CXXFLAGS = -g
+CXXFLAGS = -g 
 
 TARGET = numtest
-OBJ = FunctionSolver/Function.o test.o FunctionSolver/FunctionSolver.o common/util.o
+OBJ = FunctionSolver/Function.o test.o FunctionSolver/FunctionSolver.o common/util.o LinearAlgebra/Vector.o LinearAlgebra/Matrix.o
 HEADER = common/util.h
 
 all: 	$(OBJ)
