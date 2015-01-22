@@ -1,7 +1,7 @@
 #ifndef _FUNCTIONSOLVER_H
 #define _FUNCTIONSOLVER_H 
 #include "Function.h"
-#include "common/util.h"
+#include "../common/util.h"
 #include <cstdlib>
 
 using namespace std;

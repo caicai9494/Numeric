@@ -3,7 +3,7 @@ FLAG = -c
 CXXFLAGS = -g
 
 TARGET = numtest
-OBJ = Function.o test.o FunctionSolver.o common/util.o
+OBJ = FunctionSolver/Function.o test.o FunctionSolver/FunctionSolver.o common/util.o
 HEADER = common/util.h
 
 all: 	$(OBJ)

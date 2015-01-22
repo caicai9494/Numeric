@@ -1,5 +1,5 @@
-#include "Function.h"
-#include "FunctionSolver.h"
+#include "FunctionSolver/Function.h"
+#include "FunctionSolver/FunctionSolver.h"
 #include "common/util.h"
 #include <cmath>
 
