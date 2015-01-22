@@ -3,8 +3,6 @@
 #include "common/util.h"
 #include <cmath>
 
-
-//#include "FunctionSolver.h"
 using namespace std;
 
 
@@ -79,6 +77,7 @@ int main()
     start_timer();
     cout << bSolver3->BisectionMethod(false) << endl;
     end_timer();
+    delete bSolver3;
 
     assert(util::abs(5) == 5);
     assert(util::abs(5.99) == 5.99);
@@ -101,9 +100,42 @@ int main()
     assert(nSolver1->isSetUp() == true);
 
     start_timer();
-    cout << nSolver1->NewtonMethod(0.5, false) << endl;
+    try
+    {
+        cout << nSolver1->NewtonMethod(0.5, false) << endl;
+    }
+    catch(std::overflow_error &e)
+    {
+	std::cout << "standard exception :" << e.what(); 
+    }
     end_timer();
+    delete nSolver1;
 
+    double val1, val2;
+    val1 = 1;
+    val2 = 2;
+    util::swap(val1, val2);
+    cout << "val1 = " << val1 << endl;
+    cout << "val2 = " << val2 << endl;
+
+    SecantFunctionSolver *sSolver1 = new SecantFunctionSolver();
+    sSolver1->setFunction(&func4v);
+    sSolver1->setIgnorance(0.0001);
+    sSolver1->setIteration(100);
+    sSolver1->setBound(-10, 11);
+    assert(sSolver1->isSetUp() == true);
+
+    start_timer();
+    try
+    {
+        cout << sSolver1->SecandMethod(false) << endl;
+    }
+    catch(std::overflow_error &e)
+    {
+	std::cout << "standard exception :" << e.what(); 
+    }
+    end_timer();
+    delete sSolver1;
 
     return 0;
 }

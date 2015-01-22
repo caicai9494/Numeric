@@ -56,13 +56,24 @@ class NewtonFunctionSolver: public FunctionSolver
     public:
 	NewtonFunctionSolver();
 	~NewtonFunctionSolver();
-	double NewtonMethod(double ini_x, bool isSilenet = true);
+	double NewtonMethod(double ini_x, bool isSilent = true);
 	void setFirstPrime(Function *func);
 	bool isSetUp();
 
     private:
 	Function *first_prime;
+	//throw overflow_error when divide by zero
 	double evaluateFirstPrime(double val);
+};
+
+class SecantFunctionSolver: public FunctionSolver
+{
+    public:
+	SecantFunctionSolver();
+	~SecantFunctionSolver();
+
+	//throw overflow_error when divide by zero
+	double SecandMethod(bool isSilent = true);
 };
 
 #endif

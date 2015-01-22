@@ -123,7 +123,7 @@ bool NewtonFunctionSolver::isSetUp()
     return FunctionSolver::isSetUp() && first_prime != NULL;
 }
 
-double NewtonFunctionSolver::NewtonMethod(double ini_x, bool isSilenet)
+double NewtonFunctionSolver::NewtonMethod(double ini_x, bool isSilent)
 {
 
     if(isSetUp())
@@ -132,7 +132,7 @@ double NewtonFunctionSolver::NewtonMethod(double ini_x, bool isSilenet)
 	double new_x;
 
 	fval = evaluateFunction(ini_x);
-	if(!isSilenet)
+	if(!isSilent)
             std::cout << "At iteration " << 0 << " the function value at x = " << ini_x << " is " << fval << endl;
 	if(util::abs(fval) < ignorance)
 	{
@@ -150,7 +150,7 @@ double NewtonFunctionSolver::NewtonMethod(double ini_x, bool isSilenet)
 	    
 	    fval = evaluateFunction(new_x);
 
-	    if(!isSilenet)
+	    if(!isSilent)
 		std::cout << "At iteration " << i << " the function value at x = " << new_x << " is " << fval << endl;
 	    
 	    
@@ -162,4 +162,47 @@ double NewtonFunctionSolver::NewtonMethod(double ini_x, bool isSilenet)
 
 	return new_x;
     }
+}
+
+SecantFunctionSolver::SecantFunctionSolver():FunctionSolver()
+{}
+SecantFunctionSolver::~SecantFunctionSolver()
+{}
+
+double SecantFunctionSolver::SecandMethod(bool isSilent)
+{
+    double lBound, uBound, lValue, uValue, derivative, denominator; 
+    lBound = lowerBound;
+    uBound = upperBound;
+
+    lValue = evaluateFunction(lBound);
+    uValue = evaluateFunction(uBound);
+
+    for(int i = 0; i < iteration - 2; i++)
+    {
+	if(util::abs(lValue) < util::abs(uValue))
+	{
+	    util::swap(lValue, uValue);
+	    util::swap(lBound, uBound);
+	}
+
+	denominator = uValue - lValue;
+	if(denominator == 0)
+	    throw overflow_error("divide by zero\n");
+
+	derivative = (uBound - lBound) / denominator;
+	lBound = uBound;
+	lValue = uValue;
+
+	uBound -= uValue * derivative;
+	uValue = evaluateFunction(uBound);
+
+	if(!isSilent)
+            std::cout << "At iteration " << i << " the function value at x = " << uBound << " is " << uValue << endl;
+
+	if(util::abs(uValue) < ignorance || util::abs(uBound - lBound) < ignorance)
+	    break;
+    }
+
+    return uBound;
 }

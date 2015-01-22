@@ -21,6 +21,15 @@ namespace util
     {
 	return val > 0 ? val : -val;
     }	
+
+    template<typename T>
+    void swap(T &val1, T &val2)
+    {
+	T temp;
+	temp = val1;
+	val1 = val2;
+	val2 = temp;
+    }
 }
 
 void start_timer();
