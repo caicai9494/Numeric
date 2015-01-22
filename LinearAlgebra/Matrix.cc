@@ -52,7 +52,7 @@ Matrix& Matrix::transpose()
     {
 	for(unsigned int j = 0; j < new_col; j++)
 	{
-	    (*this)[i][j] = (*matrixVector.at(j))[i];
+	    (*newMatrix.at(i))[j] = (*matrixVector.at(j))[i];
 	}
     }
 
