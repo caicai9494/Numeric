@@ -5,8 +5,7 @@
 #include "common/util.h"
 #include <cmath>
 
-using namespace std;
-
+using namespace std; 
 
 double func(double *para, unsigned int N);
 double func2(double *para, unsigned int N);
@@ -215,8 +214,22 @@ int main()
     assert(m1[2][2] == 4);
     assert(m1[2][3] == 5);
 
+    cout << "m1 transpose \n";
     cout << m1.transpose() << endl;
-    
+
+    cout << "m2 copy from m1 \n";
+    Matrix m2(m1);
+    cout << m2;
+
+    cout << "m1' transpose \n";
+    cout << m1.transpose() << endl;
+
+    cout << " let m2 = m1\n";
+    cout << (m2 = m1);
+
+    cout << "let 2.2(m2 + m1) - m2\n";
+    cout << (m2 + m1)*2.2 - m2;
+
     return 0;
 }
 

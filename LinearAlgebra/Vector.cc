@@ -173,14 +173,14 @@ ostream& operator<<(ostream &stream, const Vector &v)
     {
 	unsigned int dim = v.getDim();
         for(unsigned int i = 0; i < dim; i++)
-	    stream << v[i] << " ";
+	    stream << setw(5) <<  v[i] << " ";
         return stream;
     }
     else
     {
 	unsigned int dim = v.getDim();
         for(unsigned int i = 0; i < dim; i++)
-	    stream << v[i] << endl;
+	    stream << setw(5) << v[i] << endl;
 	return stream;
     }
 }
