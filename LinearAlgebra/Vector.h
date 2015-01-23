@@ -4,8 +4,11 @@
 #include <cstring>
 #include <iostream>
 #include <iomanip>
+#include "Matrix.h"
 
 using namespace std;
+
+class Matrix;
 
 class Vector
 {
@@ -18,13 +21,17 @@ class Vector
 	bool getIsRowVector() const;
 	double dot(const Vector &v);
 	unsigned int getDim() const;
-	void print();
 
 	const double operator[](unsigned int i) const;
 	double &operator[](unsigned int i);
 	Vector& operator = (const Vector &v);
 	//shall be product...
-	double operator* (const Vector &v);
+	//can return a matrix or a double
+	//To simplify it can only deal with
+	//col v * row v
+	Matrix operator* (const Vector &v);
+	//col v * matrix m
+	Matrix operator* (const Matrix &m);
 	//Matrix operator* (const Vector &v);
 	Vector operator+ (const Vector &v);
 	Vector operator- (const Vector &v);
@@ -35,6 +42,8 @@ class Vector
 	friend Vector operator*(Vector lhs, const double num);
 	friend Vector operator*(const double num, Vector rhs);
 	friend ostream& operator<<(ostream &stream, const Vector &v);
+
+	static Vector zeros(unsigned int r);
 
 	~Vector();
 

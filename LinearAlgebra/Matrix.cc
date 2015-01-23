@@ -135,6 +135,26 @@ Matrix Matrix::operator- (const Matrix &m)
 
     return temp;
 }
+
+Matrix Matrix::operator* (const Matrix &m)
+{
+    assert(row == m.getCol());
+
+    Matrix copy_m(m);
+    copy_m.transpose();
+
+    Matrix result = Matrix::zeros(m.getCol(), row);
+
+
+    for(unsigned int r = 0; r < row; r++)
+    {
+	for(unsigned int c = 0; c < m.getCol(); c++)
+	{
+	    //result[r] = result[r] + (*this)[r] * copy_m[c];
+	}
+    }
+}
+
 Matrix Matrix::operator* (const double &num)
 {
     Matrix temp(*this);
@@ -150,3 +170,117 @@ Matrix Matrix::operator* (const double &num)
     return temp;
 }
     
+Vector Matrix::operator* (const Vector &v)
+{
+    assert(v.getIsRowVector() == false && col == v.getDim());
+
+    Vector v2 = Vector::zeros(v.getDim());
+    for(unsigned int r = 0; r < row; r++)
+    {
+	for(unsigned int c = 0; c < col; c++)
+	{
+	    v2[r] += v[r] * (*this)[r][c];
+	}
+    }
+
+    v2.transpose();
+    return v2;
+}
+bool Matrix::operator== (const Matrix &m)
+{
+    if(row != m.getRow() || col != m.getCol())
+	return false;
+
+    for(unsigned r = 0; r < row; r++)
+    {
+	if((*this)[r] != m[r])
+	    return false;
+    }
+
+    return true;
+}
+
+bool Matrix::operator!= (const Matrix &m)
+{
+    return !((*this) == m);
+}
+
+Matrix Matrix::zeros(unsigned int r, unsigned int c)
+{
+    assert(r > 0 && c > 0);
+
+    Matrix temp(r, c);
+
+    for(unsigned int i = 0; i < r; i++)
+    {
+	for(unsigned int j = 0; j < c; j++)
+	{
+	    temp[i][j] = 0;
+	}
+    }
+
+    return temp;
+}
+
+Matrix Matrix::identity(unsigned int r)
+{
+    assert(r > 0);
+
+    Matrix temp = Matrix::zeros(r, r);
+
+    for(unsigned int i = 0; i < r; i++)
+	temp[i][i] = 1;
+
+    return temp;
+}
+bool Matrix::isUpperTriangle()
+{
+    if(row != col)
+	return false;
+
+    for(unsigned int r = 0; r < row; r++)
+    {
+        for(unsigned int c = 0; c < r; c++)
+	{
+	    if((*this)[r][c] != 0)
+		return false;
+	}
+    }
+
+    return true;
+}
+bool Matrix::isLowerTriangle()
+{
+    if(row != col)
+	return false;
+
+    for(unsigned int r = 0; r < row; r++)
+    {
+        for(unsigned int c = r + 1; c < col; c++)
+	{
+	    if((*this)[r][c] != 0)
+		return false;
+	}
+    }
+
+    return true;
+}
+bool Matrix::isDiagonal()
+{
+    return isLowerTriangle() && isUpperTriangle();
+}
+bool Matrix::isSymmetric()
+{
+    if(row != col)
+	return false;
+
+    for(unsigned int r = 0; r < row; r++)
+    {
+        for(unsigned int c = 0; c <= r; c++)
+	{
+	    if((*this)[r][c] != (*this)[c][r])
+		return false;
+	}
+    }
+    return true;
+}

@@ -83,21 +83,39 @@ double Vector::dot(const Vector &v)
     return product;
 }
 
-double Vector::operator*(const Vector &v)
+Matrix Vector::operator*(const Vector &v)
 {
     unsigned int len = v.getDim();
-    assert(len == this->dim);
+    assert(len == this->dim && !isRowVector && v.getIsRowVector());
 
-    //if(isRowVector == true && v.getIsRowVector() == false)
+    Matrix m(len, len);
 
     double product = 0;
 
     for(unsigned int i = 0; i < len; i++)
     {
-	product += v[i] * vector[i];
+        for(unsigned int j = 0; j < len; j++)
+	{
+	    m[i][j] = vector[i] * v[j];
+	}
+    }
+    return m;
+}
+Matrix Vector::operator* (const Matrix &m)
+{
+    assert(dim == m.getRow() && isRowVector);
+
+    Matrix m2(m);
+
+    for(unsigned int r = 0; r < m.getRow(); r++)
+    {
+        for(unsigned int c = 0; c < m.getRow(); c++)
+	{
+	    m2[r][c] *= vector[r];
+	}
     }
 
-    return product;
+    return m2;
 }
 
 Vector Vector::operator+ (const Vector &v)
@@ -135,7 +153,8 @@ bool Vector::operator!= (const Vector &v) const
 bool Vector::operator== (const Vector &v) const
 {
     unsigned int v_dim = v.getDim();
-    assert(isRowVector == v.getIsRowVector() && v_dim == dim);
+    if(isRowVector != v.getIsRowVector() || v_dim != dim)
+	return false;
 
     for(unsigned i = 0; i < v_dim; i++)
     {
@@ -173,14 +192,17 @@ ostream& operator<<(ostream &stream, const Vector &v)
     {
 	unsigned int dim = v.getDim();
         for(unsigned int i = 0; i < dim; i++)
-	    stream << setw(5) <<  v[i] << " ";
+	    stream << setfill('0') << setw(9) <<  v[i] << "   ";
         return stream;
     }
     else
     {
 	unsigned int dim = v.getDim();
         for(unsigned int i = 0; i < dim; i++)
-	    stream << setw(5) << v[i] << endl;
+	{
+	    stream << setfill('0') << setw(9) << v[i] << endl;
+	    stream << endl;
+	}
 	return stream;
     }
 }
@@ -189,22 +211,18 @@ unsigned int Vector::getDim() const
     return dim;
 }
 
-void Vector::print()
-{
-    if(isRowVector)
-    {
-        for(unsigned int i = 0; i < dim; i++)
-	    cout << vector[i] << " ";
-        cout << endl;
-    }
-    else
-    {
-        for(unsigned int i = 0; i < dim; i++)
-	    cout << vector[i] << endl;
-    }
-}
 Vector& Vector::transpose()
 {
     isRowVector = !isRowVector;
     return *this;
+}
+
+Vector Vector::zeros(unsigned int r)
+{
+    Vector v(r);
+
+    for(unsigned int i = 0; i < r; i++)
+	v[i] = 0;
+
+    return v;
 }

@@ -2,14 +2,14 @@
 #include "FunctionSolver/FunctionSolver.h"
 #include "LinearAlgebra/Matrix.h"
 #include "LinearAlgebra/Vector.h"
+#include "LinearAlgebra/LinearEquationSolver.h"
 #include "common/util.h"
 #include <cmath>
 
 using namespace std; 
 
 double func(double *para, unsigned int N);
-double func2(double *para, unsigned int N);
-double func3(double *para, unsigned int N);
+double func2(double *para, unsigned int N); double func3(double *para, unsigned int N);
 double func3_prime(double *para, unsigned int N);
 
 int main()
@@ -143,21 +143,23 @@ int main()
     for(unsigned int i = 0; i < len; i++)
 	v1[i] = i;
     cout << " v1 : " << endl;
-    v1.print();
+    cout << v1 << endl;
 
     Vector v3(len);
     for(unsigned int i = 0; i < len; i++)
 	v3[i] = i + 3;
     cout << " v3 : " << endl;
-    v3.print();
+    cout << v3 << endl;
+    assert(v3 != v1);
 
     Vector v2(v1);
     cout << " v2 after copy v1: " << endl;
-    v2.print();
+    cout << v2 << endl;
+    assert(v2 == v1);
 
     v2 = v3;
     cout << " v2 after assigned by v3: " << endl;
-    v2.print();
+    cout << v2 << endl;
 
     cout << " v2 product v3: " << endl;
     cout << v2.dot(v3) << endl;
@@ -182,6 +184,10 @@ int main()
     cout << v2 << endl;
     cout << v3 << endl;
     assert((v2 == v3));
+
+    Vector v7 = Vector::zeros(3);
+    Vector v8 = Vector::zeros(5);
+    assert(v7 != v8);
 
     Vector v5(5);
     v5 = v2.transpose();
@@ -229,6 +235,74 @@ int main()
 
     cout << "let 2.2(m2 + m1) - m2\n";
     cout << (m2 + m1)*2.2 - m2;
+
+    cout << "v1\n";
+    cout << v1 << endl;
+    cout << "v2\n";
+    cout << v2 << endl;
+
+    cout << "v2 * v1 * 2.22\n";
+    Matrix m6 = v2 * v1 * 2.22;
+    cout << m6;
+    assert(!m6.isSymmetric());
+    assert(!m6.isDiagonal());
+    assert(!m6.isUpperTriangle());
+    assert(!m6.isLowerTriangle());
+
+    cout << " m 5 = v2' * (v2 * v1 * 2.22)\n";
+    Matrix m5 = v2.transpose() * (v2 * v1 * 2.22);
+    cout << m5;
+    assert(!m5.isSymmetric());
+    assert(!m5.isDiagonal());
+    assert(!m5.isUpperTriangle());
+    assert(!m5.isLowerTriangle());
+
+    cout << " m5 * v2'\n";
+    cout << m5 * v2.transpose() << endl;
+
+    cout << "zeros vector of 5\n";
+    cout << Vector::zeros(5) << endl;
+
+    cout << "zeros matrix of 5 * 3\n";
+    Matrix m3 = Matrix::zeros(5,3);
+    cout << m3;
+    assert(!m3.isSymmetric());
+    assert(!m3.isDiagonal());
+    assert(!m3.isUpperTriangle());
+    assert(!m3.isLowerTriangle());
+
+    cout << "identity matrix of 5 * 5\n";
+    Matrix m4 = Matrix::identity(5);
+    cout << m4;
+    assert(m4.isSymmetric());
+    assert(m4.isDiagonal());
+    assert(m4.isUpperTriangle());
+    assert(m4.isLowerTriangle());
+    assert(m4 != m3);
+
+    cout << " lower triangle matrix\n";
+    Matrix lm = Matrix::zeros(5, 5);
+    for(unsigned int i = 0; i < 5; i++)
+	for(unsigned int j = 0; j <= i; j++)
+	    lm[i][j] = i;
+    cout << lm;
+    assert(!lm.isSymmetric());
+    assert(!lm.isDiagonal());
+    assert(!lm.isUpperTriangle());
+    assert(lm.isLowerTriangle());
+
+    cout << " upper triangle matrix\n";
+    Matrix um = Matrix::zeros(5, 5);
+    for(unsigned int i = 0; i < 5; i++)
+	for(unsigned int j = i; j < 5; j++)
+	    um[i][j] = i;
+    cout << um;
+    assert(!um.isSymmetric());
+    assert(!um.isDiagonal());
+    assert(um.isUpperTriangle());
+    assert(!um.isLowerTriangle());
+    assert(um != lm);
+    assert(Matrix::identity(5) == Matrix::identity(5));
 
     return 0;
 }
