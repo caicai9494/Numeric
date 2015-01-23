@@ -150,9 +150,11 @@ Matrix Matrix::operator* (const Matrix &m)
     {
 	for(unsigned int c = 0; c < m.getCol(); c++)
 	{
-	    //result[r] = result[r] + (*this)[r] * copy_m[c];
+	    result[r][c] += (*this)[r].dot(copy_m[c]);
 	}
     }
+
+    return result;
 }
 
 Matrix Matrix::operator* (const double &num)

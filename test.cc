@@ -230,6 +230,9 @@ int main()
     cout << "m1' transpose \n";
     cout << m1.transpose() << endl;
 
+    cout << "m1' * m2\n";
+    cout << m1 * m2;
+
     cout << " let m2 = m1\n";
     cout << (m2 = m1);
 
@@ -303,6 +306,9 @@ int main()
     assert(!um.isLowerTriangle());
     assert(um != lm);
     assert(Matrix::identity(5) == Matrix::identity(5));
+
+    cout << "lm * um\n";
+    cout << lm * um;
 
     return 0;
 }
