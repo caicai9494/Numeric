@@ -6,14 +6,27 @@
 #include "common/util.h"
 #include <cmath>
 
+#define TEST_MATRIX 0
+#define TEST_FUNC 1
+
 using namespace std; 
 
+// y = 1 / x
 double func(double *para, unsigned int N);
-double func2(double *para, unsigned int N); double func3(double *para, unsigned int N);
+
+// y = 2 x + 5
+double func2(double *para, unsigned int N); 
+
+// y = x - sin(x);
+double func3(double *para, unsigned int N);
+
+// y = 1 - cos(x);
 double func3_prime(double *para, unsigned int N);
 
 int main()
 {
+
+#if(TEST_FUNC)
     Function1v *func1v = new Function1v();
     func1v->setFuncPtr(&func);
     double arg = 0.0;
@@ -37,23 +50,32 @@ int main()
     delete func1v2;
     func1v = NULL;
 
+    // y = 1 / x
     Function1v func2v;
     func2v.setFuncPtr(&func);
 
+    // y = 2x + 5
     Function1v func3v;
     func3v.setFuncPtr(&func2);
+
+    //solve x - sinx = 0
+    Function1v func4v;
+    func4v.setFuncPtr(&func3);
 
     BisectionFunctionSolver *bSolver2 = new BisectionFunctionSolver();
     bSolver2->setFunction(&func2v);
     delete bSolver2;
+
+    cout << " y = f(1.0)     1 / x\n";
     arg = 1.0;
-    func2v.invokeFunction(&arg);
+    cout << func2v.invokeFunction(&arg);
+    cout << endl;
 
     //solve 2x + 5 = 0
     BisectionFunctionSolver *bSolver3 = new BisectionFunctionSolver();
     bSolver3->setFunction(&func2v);
     assert(bSolver3->isSetUp() == false);
-    bSolver3->setIgnorance(0.001);
+    bSolver3->setIgnorance(0.00001);
     bSolver3->setIteration(100);
     bSolver3->setBound(-10, 20);
     assert(bSolver3->isSetUp() == true);
@@ -62,13 +84,26 @@ int main()
     
     end_timer();
     start_timer();
+    cout << endl;
+    cout << "bisection method!!\n";
+    cout << "f(x) = 1 / x\n";
     cout << bSolver3->BisectionMethod(false) << endl;
+    cout << "bisection method!! end\n";
+    cout << endl;
     start_timer();
     end_timer();
 
-    //solve x - sinx = 0
-    Function1v func4v;
-    func4v.setFuncPtr(&func3);
+    cout << "bisection method!!\n";
+    cout << "f(x) = 2x + 5\n";
+    bSolver3->setFunction(&func3v);
+    cout << bSolver3->BisectionMethod(false) << endl;
+    cout << "bisection method!! end\n";
+
+    cout << "bisection method!!\n";
+    cout << "f(x) = x - sin(x)\n";
+    bSolver3->setFunction(&func4v);
+    cout << bSolver3->BisectionMethod(false) << endl;
+    cout << "bisection method!! end\n";
 
     bSolver3->setFunction(&func4v);
     bSolver3->setIgnorance(0.0001);
@@ -137,6 +172,9 @@ int main()
     }
     end_timer();
     delete sSolver1;
+#endif
+    
+#if(TEST_MATRIX)
 
     unsigned int len = 5;
     Vector v1(len);
@@ -436,6 +474,7 @@ int main()
     cout << "check\n";
     cout << invtricky * trickym;
 
+#endif
     return 0;
 }
 

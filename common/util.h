@@ -7,14 +7,15 @@ using namespace std;
 
 static clock_t start_time = 0;
 
-template <typename T>
-int sign(T val)
-{
-    return (T(0) < val) - (val - T(0));
-}
 
 namespace util
 {
+
+    template <typename T>
+    int sign(T val)
+    {
+	return (val > 0) ? 1 : (val == 0) ? 0 : -1;
+    }
 
     template<typename T>
     T abs(T val)

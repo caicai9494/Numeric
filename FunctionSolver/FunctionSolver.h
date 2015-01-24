@@ -13,19 +13,21 @@ class FunctionSolver
 	virtual ~FunctionSolver() = 0;
 	void setIteration(unsigned int itr);
 	void setIgnorance(double ign);
-	void setBound(double lb, double ub, bool ilb = true, bool iub = true);
+	void setBound(double lb, double ub);
 	void setFunction(Function *f);
+	void setPrecision(double pre);
+	void setSegment(unsigned int s);
 
 	virtual bool isSetUp();
-
+	virtual void solve();
 
     protected:
 	double lowerBound;
 	double upperBound;
-	bool isLowerBoundIncluded;
-	bool isUpperBoundIncluded;
 	unsigned int iteration;
 	double ignorance;
+	double precision;
+	unsigned int segment;
 
 	//clean func yourself
 	Function *func;
@@ -37,6 +39,8 @@ class FunctionSolver
 	bool isIgnoranceSet;
 	bool isBoundSet;
 	bool isFunctionSet;
+	bool isSegmentSet;
+	bool isPrecisionSet;
 
 };
 
@@ -46,9 +50,10 @@ class BisectionFunctionSolver: public FunctionSolver
         BisectionFunctionSolver();  
 	~BisectionFunctionSolver();
 
+	void solve();
 	//If no solution in the boundry
-	//Return a value bigger than upperBound
-	double BisectionMethod(bool isSilent = true);
+	//Return lowBound - 1
+	double BisectionMethod(unsigned int s);
 };
 
 class NewtonFunctionSolver: public FunctionSolver

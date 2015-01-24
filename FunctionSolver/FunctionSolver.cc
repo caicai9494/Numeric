@@ -4,7 +4,7 @@
 FunctionSolver::FunctionSolver()
 {
     func = NULL;
-    isFunctionSet = isIterationSet = isBoundSet = isIgnoranceSet = false;
+    isFunctionSet = isIterationSet = isBoundSet = isIgnoranceSet = isPrecisionSet = isSegmentSet = false;
 }
 
 FunctionSolver::~FunctionSolver()
@@ -23,13 +23,11 @@ void FunctionSolver::setIgnorance(double ign)
     isIgnoranceSet = true;
 }
 
-void FunctionSolver::setBound(double lb, double ub, bool ilb, bool iub)
+void FunctionSolver::setBound(double lb, double ub)
 {
     assert(lb <= ub);
     lowerBound = lb;
     upperBound = ub;
-    isLowerBoundIncluded = ilb;
-    isUpperBoundIncluded = iub;
 
     isBoundSet = true;
 }
@@ -38,6 +36,18 @@ void FunctionSolver::setFunction(Function *f)
     if(f != NULL)
 	func = f;
     isFunctionSet = true;
+}
+
+void FunctionSolver::setPrecision(double pre)
+{
+    precision = pre;
+    isPrecisionSet = true;
+}
+
+void FunctionSolver::setSegment(unsigned int s)
+{
+    segment = s;
+    isSegmentSet = true;
 }
 
 bool FunctionSolver::isSetUp()
@@ -51,47 +61,66 @@ double FunctionSolver::evaluateFunction(double para)
     return (func)->invokeFunction(&arg, sizeof(para) / sizeof(double));
 }
 
-double BisectionFunctionSolver::BisectionMethod(bool isSilent)
+double BisectionFunctionSolver::BisectionMethod(unsigned int s)
 {
-    if(isSetUp())
+    if(!isSetUp())
+	throw runtime_error("Bisection method: function not set up yet\n");
+    
+    double interval, mid, lBound, uBound, lValue, uValue, mValue;
+    int i;
+    lBound = lowerBound;
+    uBound = upperBound;
+    interval = uBound - lBound;
+
+    //while(i < iteration && abs(mValue = evaluateFunction(mid)) < ignorance)
+    lValue = evaluateFunction(lBound);
+    uValue = evaluateFunction(uBound);
+
+    if(util::sign(lValue) == util::sign(uValue))
     {
-	double interval, mid, lBound, uBound, lValue, uValue, mValue;
-	int i;
-	lBound = lowerBound;
-	uBound = upperBound;
-	interval = uBound - lBound;
+	cout << "No solution in the interval [" << lBound << ", " << uBound << "]\n";
+	return lowerBound - 1;
+    }
 
-	//while(i < iteration && abs(mValue = evaluateFunction(mid)) < ignorance)
-	for(i = 0; i < iteration; i++)
+    for(i = 0; i < iteration; i++)
+    {
+	//update mid and midvalue if not converged
+	interval /= 2;
+	mid = lBound + interval;
+	mValue = evaluateFunction(mid);
+
+	//judge when converge
+	if(util::abs(mValue) < ignorance)
+	    return mid;
+	if(interval < ignorance)
+	    return lowerBound - 1;
+	if(util::abs(lValue) < ignorance)
+	    return lValue;
+	if(util::abs(uValue) < ignorance)
+	    return uValue;
+
+	//update low or upper bound
+	if(util::sign(mValue) != util::sign(lValue))
 	{
-	    interval /= 2;
-	    mid = lBound + interval;
-	    mValue = evaluateFunction(mid);
-	    lValue = evaluateFunction(lBound);
-	    uValue = evaluateFunction(uBound);
-
-	    if(interval < ignorance || mValue < ignorance)
-		break;
-
-	    if(sign(mValue) == sign(lValue))
-	    {
-		lBound = mid;
-		lValue = mValue;
-	    }
-	    else
-	    {
-		uBound = mid;
-		uValue = mValue;
-	    }
-
-	    if(!isSilent)
-	    {
-		std::cout << "At iteration " << i << " the function value at x = " << mid << " is " << mValue << endl;
-	    }
+	    uBound = mid;
+	    uValue = mValue;
+	}
+	else if(util::sign(mValue) != util::sign(uValue))
+	{
+	    lBound = mid;
+	    lValue = mValue;
 	}
 
-	return mid;
+	if(!isSilent)
+	{
+	    std::cout << "At iteration " << i << " the function value at x = " << mid << " is " << mValue << endl;
+	}
+
+	lValue = evaluateFunction(lBound);
+	uValue = evaluateFunction(uBound);
     }
+
+    return lowerBound - 1;
 }
 
 BisectionFunctionSolver::BisectionFunctionSolver():FunctionSolver()
