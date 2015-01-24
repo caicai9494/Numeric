@@ -224,16 +224,17 @@ int main()
     cout << m1.transpose() << endl;
 
     cout << "m2 copy from m1 \n";
-    Matrix m2(m1);
+    Matrix m2(m1.transpose());
     cout << m2;
     assert(!m2.isSquare());
 
     cout << "m1' transpose \n";
+    m1 = m1.transpose();
     cout << m1.transpose() << endl;
     assert(!m1.isSquare());
 
     cout << "m1' * m2\n";
-    cout << m1 * m2;
+    cout << m1.transpose() * m2;
 
     cout << " let m2 = m1\n";
     cout << (m2 = m1);
@@ -422,6 +423,13 @@ int main()
     cout << ivan;
     cout << " check \n";
     cout << van * ivan;
+
+    cout << " trickym's inverse\n";
+    Matrix invtricky = trickym.inverse();
+    cout << invtricky;
+    cout << "check\n";
+    cout << invtricky * trickym;
+
     return 0;
 }
 

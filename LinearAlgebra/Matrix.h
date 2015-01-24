@@ -36,7 +36,7 @@ class Matrix
 
 	friend ostream& operator << (ostream& stream, const Matrix& m);
 
-	Matrix& transpose();
+	Matrix transpose() const;
 	Matrix getL();
 	Matrix getU();
 	Matrix pivoting();

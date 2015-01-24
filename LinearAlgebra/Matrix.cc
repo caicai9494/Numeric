@@ -71,13 +71,27 @@ Matrix& Matrix::operator= (const Matrix &m)
     }
 }
 
-Matrix& Matrix::transpose()
+Matrix Matrix::transpose() const
 {
-    MatrixVector newMatrix;
 
     unsigned int new_row = col;
     unsigned int new_col = row;
 
+    Matrix temp(new_row, new_col);
+
+    for(unsigned int r = 0; r < new_row; r++)
+    {
+	for(unsigned int c = 0; c < new_col; c++)
+	{
+	    temp[r][c] = (*this)[c][r];
+	}
+    }
+
+    return temp;
+
+    /*
+
+    //MatrixVector newMatrix;
     for(unsigned int i = 0; i < new_row; i++)
 	newMatrix.push_back(new Vector(new_col));
 
@@ -99,6 +113,7 @@ Matrix& Matrix::transpose()
     matrixVector = newMatrix;
 
     return *this;
+    */
 }
 
 unsigned int Matrix::getRow() const
@@ -153,8 +168,7 @@ Matrix Matrix::operator* (const Matrix &m)
 {
     assert(row == m.getCol());
 
-    Matrix copy_m(m);
-    copy_m.transpose();
+    Matrix copy_m = m.transpose();
 
     Matrix result = Matrix::zeros(m.getCol(), row);
 
@@ -198,8 +212,7 @@ Vector Matrix::operator* (const Vector &v)
 	}
     }
 
-    v2.transpose();
-    return v2;
+    return v2.transpose();
 }
 bool Matrix::operator== (const Matrix &m)
 {
@@ -336,9 +349,9 @@ void Matrix::swapRow(unsigned int i, unsigned int j)
 void Matrix::swapCol(unsigned int i, unsigned int j)
 {
     assert(i >= 0 && j >= 0 && i < col && j < col);
-    this->transpose();
+    Matrix copy_m = this->transpose();
     swapRow(i, j);
-    this->transpose();
+    *this = copy_m;
 }
 
 void Matrix::GaussElimitation()
@@ -485,10 +498,32 @@ Matrix Matrix::inverse()
     Matrix inv = Matrix::identity(row);
     Matrix copy_m(*this);
 
+
     double divider, multiplier;
 
     for(unsigned int i = 0; i < row; i++)
     {
+	//pivoting
+        unsigned int max_r;
+        double max_val;
+        max_r = i;
+        max_val = copy_m[i][i];
+
+	for(unsigned int r = i; r < row; r++)
+	{
+	    if(max_val < copy_m[r][i])
+	    {
+		max_val = copy_m[r][i];
+		max_r = r;
+	    }
+	}
+
+	if(max_r != i)
+	{
+	    copy_m.swapRow(max_r, i);
+	    inv.swapRow(max_r, i);
+	}
+
 	divider = copy_m[i][i];
 	if(divider == 0)
 	    throw runtime_error("Cannot inverse: diagonal zero value.\n");
