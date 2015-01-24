@@ -16,7 +16,7 @@ LinearEquationSolver::~LinearEquationSolver()
     if(! rhsVector)
     delete rhsVector;
     */
-    if(!luDecomposition)
+    if(luDecomposition)
 	delete luDecomposition;
 }
 
