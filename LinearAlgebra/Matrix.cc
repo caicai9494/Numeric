@@ -349,9 +349,13 @@ void Matrix::swapRow(unsigned int i, unsigned int j)
 void Matrix::swapCol(unsigned int i, unsigned int j)
 {
     assert(i >= 0 && j >= 0 && i < col && j < col);
-    Matrix copy_m = this->transpose();
-    swapRow(i, j);
-    *this = copy_m;
+
+    for(unsigned int r = 0; r < row; r++)
+	util::swap((*this)[r][i], (*this)[r][j]);
+
+    //Matrix copy_m = this->transpose();
+    //swapRow(i, j);
+    //*this = copy_m.transpose();
 }
 
 void Matrix::GaussElimitation()
