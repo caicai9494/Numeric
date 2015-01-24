@@ -480,6 +480,44 @@ Matrix Matrix::getU()
     return *(luDecomposition->UMatrix);
 }
 
+Matrix Matrix::inverse()
+{
+    Matrix inv = Matrix::identity(row);
+    Matrix copy_m(*this);
+
+    double divider, multiplier;
+
+    for(unsigned int i = 0; i < row; i++)
+    {
+	divider = copy_m[i][i];
+	if(divider == 0)
+	    throw runtime_error("Cannot inverse: diagonal zero value.\n");
+	else
+	{
+
+	    for(unsigned int j = 0; j < col; j++)
+	    {
+		copy_m[i][j] /= divider;
+		inv[i][j] /= divider;
+	    }
+
+	    for(unsigned int j = 0; j < row; j++)
+	    {
+		if(j == i)
+		    continue;
+		else
+		    multiplier = copy_m[j][i];
+
+		for(unsigned int k = i; k < col; k++) 
+		    copy_m[j][k] -= multiplier * copy_m[i][k]; 
+		for(unsigned int k = 0; k < col; k++) 
+		    inv[j][k] -= multiplier * inv[i][k];
+	    }
+	}
+    }
+    return inv;
+}
+
 //////////////For LUDecomposition///////////////
 LUDecomposition::LUDecomposition(unsigned int i)
 {

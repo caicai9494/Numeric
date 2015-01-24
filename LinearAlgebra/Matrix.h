@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <cmath>
 #include "Vector.h"
+#include "../common/type.h"
 
 using namespace std;
 
@@ -39,6 +40,8 @@ class Matrix
 	Matrix getL();
 	Matrix getU();
 	Matrix pivoting();
+	//use gauss-jordan method
+	Matrix inverse();
 
 	unsigned int getRow() const;
 	unsigned int getCol() const;

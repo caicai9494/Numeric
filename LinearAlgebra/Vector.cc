@@ -200,7 +200,12 @@ ostream& operator<<(ostream &stream, const Vector &v)
     {
 	unsigned int dim = v.getDim();
         for(unsigned int i = 0; i < dim; i++)
-	    stream << setfill(' ') << setw(9) <<  v[i] << "   ";
+	{
+	    if(abs(v[i]) < DOUBLE_IGNORANCE)
+	        stream << setfill(' ') << setw(9) << 0.0 << "   ";
+	    else
+	        stream << setfill(' ') << setw(9) <<  v[i] << "   ";
+	}
         return stream;
     }
     else
@@ -208,7 +213,10 @@ ostream& operator<<(ostream &stream, const Vector &v)
 	unsigned int dim = v.getDim();
         for(unsigned int i = 0; i < dim; i++)
 	{
-	    stream << setfill(' ') << setw(9) << v[i] << endl;
+	    if(abs(v[i]) < DOUBLE_IGNORANCE)
+	        stream << setfill(' ') << setw(9) << 0.0 << endl;
+	    else 
+	        stream << setfill(' ') << setw(9) << v[i] << endl;
 	    stream << endl;
 	}
 	return stream;

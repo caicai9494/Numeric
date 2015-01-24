@@ -359,6 +359,10 @@ int main()
     cout << lSolver2.solve() << endl;
     end_timer();
 
+    Vector vanvector(3);
+    vanvector[0] = 1;
+    vanvector[1] = 2;
+    vanvector[2] = 3;
     cout << " vandermonde matrix\n";
     Matrix van = Matrix::vandermonde(v2);
     cout << van;
@@ -411,7 +415,13 @@ int main()
     cout << "result is !trickym's \n";
     cout << lSolver2.solve() << endl;
 
-
+    cout << " van\n";
+    cout << van;
+    cout << " van's inverse\n";
+    Matrix ivan = van.inverse();
+    cout << ivan;
+    cout << " check \n";
+    cout << van * ivan;
     return 0;
 }
 

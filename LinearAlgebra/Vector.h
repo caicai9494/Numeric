@@ -6,6 +6,7 @@
 #include <iomanip>
 #include "Matrix.h"
 #include "../common/util.h"
+#include "../common/type.h"
 
 using namespace std;
 
