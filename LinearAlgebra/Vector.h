@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 #include "Matrix.h"
+#include "../common/util.h"
 
 using namespace std;
 
@@ -15,6 +16,7 @@ class Vector
     public:
 	explicit Vector(unsigned int i);
 	Vector(const Vector &v);
+	Vector();
 
 	Vector& transpose();
 
@@ -45,6 +47,7 @@ class Vector
 
 	static Vector zeros(unsigned int r);
 
+	void swap(unsigned int i, unsigned int j);
 	~Vector();
 
     private:

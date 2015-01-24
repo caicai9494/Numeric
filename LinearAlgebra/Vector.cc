@@ -1,5 +1,6 @@
 #include "Vector.h"
 
+
 Vector::Vector(unsigned int i)
 {
     assert(i > 0);
@@ -24,6 +25,13 @@ Vector::Vector(const Vector &v)
 	}
     }
     
+}
+
+Vector::Vector()
+{
+    dim = 0;
+    isRowVector = true;
+    vector = NULL;
 }
 
 Vector::~Vector()
@@ -192,7 +200,7 @@ ostream& operator<<(ostream &stream, const Vector &v)
     {
 	unsigned int dim = v.getDim();
         for(unsigned int i = 0; i < dim; i++)
-	    stream << setfill('0') << setw(9) <<  v[i] << "   ";
+	    stream << setfill(' ') << setw(9) <<  v[i] << "   ";
         return stream;
     }
     else
@@ -200,7 +208,7 @@ ostream& operator<<(ostream &stream, const Vector &v)
 	unsigned int dim = v.getDim();
         for(unsigned int i = 0; i < dim; i++)
 	{
-	    stream << setfill('0') << setw(9) << v[i] << endl;
+	    stream << setfill(' ') << setw(9) << v[i] << endl;
 	    stream << endl;
 	}
 	return stream;
@@ -226,3 +234,10 @@ Vector Vector::zeros(unsigned int r)
 
     return v;
 }
+void Vector::swap(unsigned int i, unsigned int j)
+{
+    assert(i >= 0 && j >= 0 && i < dim && j < dim);
+
+    util::swap(vector[i], vector[j]);
+}
+

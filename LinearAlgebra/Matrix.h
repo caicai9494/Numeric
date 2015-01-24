@@ -3,11 +3,14 @@
 
 #include <vector>
 #include <iostream>
+#include <stdexcept>
+#include <cmath>
 #include "Vector.h"
 
 using namespace std;
 
 class Vector;
+class LUDecomposition;
 
 class Matrix
 {
@@ -15,6 +18,9 @@ class Matrix
     public:
 	Matrix(unsigned int r, unsigned int c);
 	Matrix(const Matrix &m);
+
+	virtual ~Matrix();
+
 	const Vector& operator[](unsigned int r) const;
 	Vector& operator[](unsigned int r);
 	Matrix operator+ (const Matrix &m);
@@ -30,22 +36,50 @@ class Matrix
 	friend ostream& operator << (ostream& stream, const Matrix& m);
 
 	Matrix& transpose();
-	~Matrix();
+	Matrix getL();
+	Matrix getU();
+	Matrix pivoting();
 
 	unsigned int getRow() const;
 	unsigned int getCol() const;
+	unsigned int getR();
 
 	static Matrix zeros(unsigned int r, unsigned int c);
 	static Matrix identity(unsigned int r);
+	static Matrix vandermonde(const Vector &v);
 
 	bool isUpperTriangle();
 	bool isLowerTriangle();
 	bool isDiagonal();
 	bool isSymmetric();
+	bool isSquare();
+
+	void swapRow(unsigned int i, unsigned int j);
+	void swapCol(unsigned int i, unsigned int j);
+	void GaussElimitation(); 
+	void GaussElimitationPivot(); 
 
     private:
 	MatrixVector matrixVector;
 	unsigned int row;
 	unsigned int col;
+	//implement copy later;
+	LUDecomposition *luDecomposition;
 };
+
+class LUDecomposition
+{
+    public:
+	LUDecomposition(unsigned int i);
+	~LUDecomposition();
+
+	Matrix *LMatrix;
+	Matrix *UMatrix;
+	unsigned int *permutation;
+    private:
+
+	LUDecomposition(const LUDecomposition &lu) {}
+	LUDecomposition& operator= (const LUDecomposition &lu) {}
+};
+
 #endif

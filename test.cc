@@ -226,9 +226,11 @@ int main()
     cout << "m2 copy from m1 \n";
     Matrix m2(m1);
     cout << m2;
+    assert(!m2.isSquare());
 
     cout << "m1' transpose \n";
     cout << m1.transpose() << endl;
+    assert(!m1.isSquare());
 
     cout << "m1' * m2\n";
     cout << m1 * m2;
@@ -246,6 +248,7 @@ int main()
 
     cout << "v2 * v1 * 2.22\n";
     Matrix m6 = v2 * v1 * 2.22;
+    assert(m6.isSquare());
     cout << m6;
     assert(!m6.isSymmetric());
     assert(!m6.isDiagonal());
@@ -273,6 +276,7 @@ int main()
     assert(!m3.isDiagonal());
     assert(!m3.isUpperTriangle());
     assert(!m3.isLowerTriangle());
+    assert(!m3.isSquare());
 
     cout << "identity matrix of 5 * 5\n";
     Matrix m4 = Matrix::identity(5);
@@ -282,23 +286,25 @@ int main()
     assert(m4.isUpperTriangle());
     assert(m4.isLowerTriangle());
     assert(m4 != m3);
+    assert(m4.isSquare());
 
     cout << " lower triangle matrix\n";
     Matrix lm = Matrix::zeros(5, 5);
     for(unsigned int i = 0; i < 5; i++)
 	for(unsigned int j = 0; j <= i; j++)
-	    lm[i][j] = i;
+	    lm[i][j] = i + 4;
     cout << lm;
     assert(!lm.isSymmetric());
     assert(!lm.isDiagonal());
     assert(!lm.isUpperTriangle());
     assert(lm.isLowerTriangle());
+    assert(m4.isSquare());
 
     cout << " upper triangle matrix\n";
     Matrix um = Matrix::zeros(5, 5);
     for(unsigned int i = 0; i < 5; i++)
 	for(unsigned int j = i; j < 5; j++)
-	    um[i][j] = i;
+	    um[i][j] = i + 4;
     cout << um;
     assert(!um.isSymmetric());
     assert(!um.isDiagonal());
@@ -306,9 +312,105 @@ int main()
     assert(!um.isLowerTriangle());
     assert(um != lm);
     assert(Matrix::identity(5) == Matrix::identity(5));
+    assert(m4.isSquare());
+
+    cout << "swap um 2 row with 3 row\n";
+    um.swapRow(1, 2);
+    cout << um;
+
+    cout << "swap um 3 row with 2 row\n";
+    um.swapRow(2, 1);
+    cout << um;
+
+    cout << "swap um 2 col with 3 col\n";
+    um.swapCol(1, 2);
+    cout << um;
+
+    cout << "swap um 3 row with 2 col\n";
+    um.swapCol(2, 1);
+    cout << um;
 
     cout << "lm * um\n";
     cout << lm * um;
+
+    LinearEquationSolver lSolver3;
+    lSolver3.setLhsMatrix(lm);
+    assert(!lSolver3.isHomogeneous());
+
+    Vector res_zero = Vector::zeros(5);
+
+    LinearEquationSolver lSolver;
+    lSolver.setLhsMatrix(um);
+    lSolver.setRhsVector(res_zero);
+    cout << lSolver;
+    assert(lSolver.isHomogeneous());
+
+    Vector res_2 = Vector::zeros(5);
+    res_2[2] = 2;
+    res_2.swap(2,0);
+
+    LinearEquationSolver lSolver2;
+    lSolver2.setLhsMatrix(lm);
+    lSolver2.setRhsVector(res_2);
+    cout << lSolver2;
+    assert(!lSolver2.isHomogeneous());
+    cout << " result is\n";
+    start_timer();
+    cout << lSolver2.solve() << endl;
+    end_timer();
+
+    cout << " vandermonde matrix\n";
+    Matrix van = Matrix::vandermonde(v2);
+    cout << van;
+    assert(!van.isSymmetric());
+    assert(!van.isDiagonal());
+    assert(!van.isUpperTriangle());
+    assert(!van.isLowerTriangle());
+    assert(van.isSquare());
+    van.GaussElimitation();
+    Matrix vl = van.getL();
+    Matrix vu = van.getU();
+    cout << " van's lower triangle matrix\n";
+    cout << vl;
+    cout << " van's upper triangle matrix\n";
+    cout << vu;
+    cout << " van's \n";
+    cout << vl * vu << endl;
+
+    Matrix trickym = Matrix::zeros(3, 3);
+    trickym[0][0] = 0.001;
+    trickym[0][1] = 2.00;
+    trickym[0][2] = 3.00;
+    trickym[1][0] = -1.00;
+    trickym[1][1] = 3.712;
+    trickym[1][2] = 4.623;
+    trickym[2][0] = -2.00;
+    trickym[2][1] = 1.072;
+    trickym[2][2] = 5.643;
+    Vector trickrhs = Vector::zeros(3);
+    trickrhs[0] = 1;
+    trickrhs[1] = 2;
+    trickrhs[2] = 3;
+    assert(!trickym.isSymmetric());
+    assert(!trickym.isDiagonal());
+    assert(!trickym.isUpperTriangle());
+    assert(!trickym.isLowerTriangle());
+    assert(trickym.isSquare());
+    trickym.GaussElimitation();
+    vl = trickym.getL();
+    vu = trickym.getU();
+    cout << trickym;
+    cout << " trickym's lower triangle matrix\n";
+    cout << vl;
+    cout << " trickym's upper triangle matrix\n";
+    cout << vu;
+    cout << " trickym's \n";
+    cout << vl * vu << endl;
+    lSolver2.setLhsMatrix(trickym);
+    lSolver2.setRhsVector(trickrhs);
+    cout << "result is !trickym's \n";
+    cout << lSolver2.solve() << endl;
+
 
     return 0;
 }

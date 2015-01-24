@@ -4,6 +4,8 @@ Matrix::Matrix(unsigned int r, unsigned int c):row(r), col(c)
 {
     for(unsigned int i = 0; i < r; i++)
         matrixVector.push_back(new Vector(c));
+
+    luDecomposition = NULL;
 }
 
 Matrix::Matrix(const Matrix &m)
@@ -16,12 +18,17 @@ Matrix::Matrix(const Matrix &m)
 	for(unsigned int i = 0; i < row; i++)
 	    matrixVector.push_back(new Vector(m[i]));
     }
+
+    luDecomposition = NULL;
 }
 
 Matrix::~Matrix()
 {
     for(unsigned int i = 0; i < row; i++)
 	delete matrixVector.at(i);
+
+    if(luDecomposition != NULL)
+        delete luDecomposition;
 }
 
 const Vector& Matrix::operator[](unsigned int r)const 
@@ -98,9 +105,15 @@ unsigned int Matrix::getRow() const
 {
     return row;
 }
+
 unsigned int Matrix::getCol() const
 {
     return col;
+}
+
+unsigned int Matrix::getR()
+{
+    return row;
 }
 
 Matrix Matrix::operator+ (const Matrix &m)
@@ -223,6 +236,25 @@ Matrix Matrix::zeros(unsigned int r, unsigned int c)
 
     return temp;
 }
+Matrix Matrix::vandermonde(const Vector &v)
+{
+    if(&v == NULL)
+	throw runtime_error("vandermonde: invalid vector\n");
+    else
+    {
+	unsigned int row = v.getDim();
+	Matrix temp = Matrix::zeros(row, row);
+	for(unsigned int i = 0; i < row; i++)
+	{
+	    for(unsigned int j = 0; j < row; j++)
+	    {
+		temp[i][j] = pow(v[i], j);
+	    }
+	}
+
+	return temp;
+    }
+}
 
 Matrix Matrix::identity(unsigned int r)
 {
@@ -286,3 +318,188 @@ bool Matrix::isSymmetric()
     }
     return true;
 }
+
+bool Matrix::isSquare()
+{
+    return col == row;
+}
+
+void Matrix::swapRow(unsigned int i, unsigned int j)
+{
+    assert(i >= 0 && j >= 0 && i < row && j < row);
+
+    Vector *temp;
+    temp = matrixVector.at(i);
+    matrixVector.at(i) = matrixVector.at(j);
+    matrixVector.at(j) = temp;
+}
+void Matrix::swapCol(unsigned int i, unsigned int j)
+{
+    assert(i >= 0 && j >= 0 && i < col && j < col);
+    this->transpose();
+    swapRow(i, j);
+    this->transpose();
+}
+
+void Matrix::GaussElimitation()
+{
+
+    assert(isSquare());
+
+    if(luDecomposition != NULL)
+	delete luDecomposition;
+
+    Matrix L = Matrix::identity(row);
+    Matrix U = Matrix::zeros(row, row);
+
+    luDecomposition = new LUDecomposition(col);
+
+    double sum = 0;
+
+    for(unsigned int i = 0; i < row; i++)
+    {
+	for(unsigned int j = 0; j < i; j++)
+	{
+	    sum += L[i][j] * U[j][i];
+	}
+    
+	U[i][i] = (*this)[i][i] - sum;	
+	sum = 0;
+
+	for(unsigned int j = i + 1; j < row; j++)
+	{
+	    for(unsigned int k = 0; k < j; k++)
+	    {
+		sum += L[i][k] * U[k][j];
+	    }
+	    U[i][j] = (*this)[i][j] - sum;
+	    sum = 0;
+	}
+
+	for(unsigned int j = i + 1; j < row; j++)
+	{
+	    for(unsigned int k = 0; k < j; k++)
+	    {
+		sum += L[j][k] * U[k][i];
+	    }
+
+	    if(!U[i][i])
+		throw runtime_error("Cannot solve: Try pivoting or singular matrix\n");
+
+	    L[j][i] = ((*this)[j][i] - sum) / U[i][i];
+	    sum = 0;
+	}
+    }
+
+    luDecomposition->LMatrix = new Matrix(L);
+    luDecomposition->UMatrix = new Matrix(U);
+} 
+
+void Matrix::GaussElimitationPivot()
+{
+    assert(isSquare());
+
+    if(luDecomposition != NULL)
+	delete luDecomposition;
+
+    Matrix L = Matrix::identity(row);
+    Matrix U = Matrix::zeros(row, row);
+
+    unsigned int *p;
+    luDecomposition = new LUDecomposition(col);
+    p = luDecomposition->permutation;
+    p = new unsigned int[row];
+    for(unsigned int i = 0; i < row; i++)
+	p[i] = i;
+
+
+    double sum = 0;
+
+    for(unsigned int i = 0; i < row; i++)
+    {
+	double max_ele = 0;
+	unsigned int max_r = i;
+
+	for(unsigned int r = i; r < row; r++)
+	{
+	    if(abs(max_ele) < abs((*this)[r][i]))
+	    {
+		max_ele = (*this)[r][i];
+		max_r = r;
+	    }
+	}
+
+	if(!max_ele)
+	    throw runtime_error("Cannot solve: singular matrix\n");
+
+	p[max_r] = i;
+	p[i] = max_r;
+	
+
+	for(unsigned int j = 0; j < i; j++)
+	{
+	    sum += L[i][j] * U[j][i];
+	}
+    
+	U[i][i] = (*this)[p[i]][i] - sum;	
+	sum = 0;
+
+	for(unsigned int j = i + 1; j < row; j++)
+	{
+	    for(unsigned int k = 0; k < j; k++)
+	    {
+		sum += L[i][k] * U[k][j];
+	    }
+	    U[i][j] = (*this)[p[i]][j] - sum;
+	    sum = 0;
+	}
+
+	for(unsigned int j = i + 1; j < row; j++)
+	{
+	    for(unsigned int k = 0; k < j; k++)
+	    {
+		sum += L[j][k] * U[k][i];
+	    }
+	    L[j][i] = ((*this)[p[j]][i] - sum) / U[i][i];
+	    sum = 0;
+	}
+    }
+
+    luDecomposition->LMatrix = new Matrix(L);
+    luDecomposition->UMatrix = new Matrix(U);
+}
+
+Matrix Matrix::getL()
+{
+    assert(luDecomposition != NULL);
+    return *(luDecomposition->LMatrix);
+}
+Matrix Matrix::getU()
+{
+    assert(luDecomposition != NULL);
+    return *(luDecomposition->UMatrix);
+}
+
+//////////////For LUDecomposition///////////////
+LUDecomposition::LUDecomposition(unsigned int i)
+{
+    assert(i > 0);
+
+    LMatrix = NULL;
+    UMatrix = NULL;
+
+    permutation = NULL;
+}
+
+LUDecomposition::~LUDecomposition()
+{
+    if(LMatrix)
+        delete LMatrix;
+    if(UMatrix)
+        delete UMatrix;
+    if(permutation)
+        delete []permutation;
+}
+
+
+
