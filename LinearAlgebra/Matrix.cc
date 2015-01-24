@@ -5,7 +5,6 @@ Matrix::Matrix(unsigned int r, unsigned int c):row(r), col(c)
     for(unsigned int i = 0; i < r; i++)
         matrixVector.push_back(new Vector(c));
 
-    luDecomposition = NULL;
 }
 
 Matrix::Matrix(const Matrix &m)
@@ -19,7 +18,6 @@ Matrix::Matrix(const Matrix &m)
 	    matrixVector.push_back(new Vector(m[i]));
     }
 
-    luDecomposition = NULL;
 }
 
 Matrix::~Matrix()
@@ -27,8 +25,6 @@ Matrix::~Matrix()
     for(unsigned int i = 0; i < row; i++)
 	delete matrixVector.at(i);
 
-    if(luDecomposition != NULL)
-        delete luDecomposition;
 }
 
 const Vector& Matrix::operator[](unsigned int r)const 
@@ -354,144 +350,7 @@ void Matrix::swapCol(unsigned int i, unsigned int j)
 	util::swap((*this)[r][i], (*this)[r][j]);
 }
 
-void Matrix::GaussElimitation()
-{
 
-    assert(isSquare());
-
-    if(luDecomposition != NULL)
-	delete luDecomposition;
-
-    Matrix L = Matrix::identity(row);
-    Matrix U = Matrix::zeros(row, row);
-
-    luDecomposition = new LUDecomposition(col);
-
-    double sum = 0;
-
-    for(unsigned int i = 0; i < row; i++)
-    {
-	for(unsigned int j = 0; j < i; j++)
-	{
-	    sum += L[i][j] * U[j][i];
-	}
-    
-	U[i][i] = (*this)[i][i] - sum;	
-	sum = 0;
-
-	for(unsigned int j = i + 1; j < row; j++)
-	{
-	    for(unsigned int k = 0; k < j; k++)
-	    {
-		sum += L[i][k] * U[k][j];
-	    }
-	    U[i][j] = (*this)[i][j] - sum;
-	    sum = 0;
-	}
-
-	for(unsigned int j = i + 1; j < row; j++)
-	{
-	    for(unsigned int k = 0; k < j; k++)
-	    {
-		sum += L[j][k] * U[k][i];
-	    }
-
-	    if(!U[i][i])
-		throw runtime_error("Cannot solve: Try pivoting or singular matrix\n");
-
-	    L[j][i] = ((*this)[j][i] - sum) / U[i][i];
-	    sum = 0;
-	}
-    }
-
-    luDecomposition->LMatrix = new Matrix(L);
-    luDecomposition->UMatrix = new Matrix(U);
-} 
-
-void Matrix::GaussElimitationPivot()
-{
-    assert(isSquare());
-
-    if(luDecomposition != NULL)
-	delete luDecomposition;
-
-    Matrix L = Matrix::identity(row);
-    Matrix U = Matrix::zeros(row, row);
-
-    unsigned int *p;
-    luDecomposition = new LUDecomposition(col);
-    p = luDecomposition->permutation;
-    p = new unsigned int[row];
-    for(unsigned int i = 0; i < row; i++)
-	p[i] = i;
-
-
-    double sum = 0;
-
-    for(unsigned int i = 0; i < row; i++)
-    {
-	double max_ele = 0;
-	unsigned int max_r = i;
-
-	for(unsigned int r = i; r < row; r++)
-	{
-	    if(abs(max_ele) < abs((*this)[r][i]))
-	    {
-		max_ele = (*this)[r][i];
-		max_r = r;
-	    }
-	}
-
-	if(!max_ele)
-	    throw runtime_error("Cannot solve: singular matrix\n");
-
-	p[max_r] = i;
-	p[i] = max_r;
-	
-
-	for(unsigned int j = 0; j < i; j++)
-	{
-	    sum += L[i][j] * U[j][i];
-	}
-    
-	U[i][i] = (*this)[p[i]][i] - sum;	
-	sum = 0;
-
-	for(unsigned int j = i + 1; j < row; j++)
-	{
-	    for(unsigned int k = 0; k < j; k++)
-	    {
-		sum += L[i][k] * U[k][j];
-	    }
-	    U[i][j] = (*this)[p[i]][j] - sum;
-	    sum = 0;
-	}
-
-	for(unsigned int j = i + 1; j < row; j++)
-	{
-	    for(unsigned int k = 0; k < j; k++)
-	    {
-		sum += L[j][k] * U[k][i];
-	    }
-	    L[j][i] = ((*this)[p[j]][i] - sum) / U[i][i];
-	    sum = 0;
-	}
-    }
-
-    luDecomposition->LMatrix = new Matrix(L);
-    luDecomposition->UMatrix = new Matrix(U);
-}
-
-Matrix Matrix::getL()
-{
-    assert(luDecomposition != NULL);
-    return *(luDecomposition->LMatrix);
-}
-Matrix Matrix::getU()
-{
-    assert(luDecomposition != NULL);
-    return *(luDecomposition->UMatrix);
-}
 
 Matrix Matrix::inverse()
 {

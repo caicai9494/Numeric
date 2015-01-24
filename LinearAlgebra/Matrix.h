@@ -37,10 +37,6 @@ class Matrix
 	friend ostream& operator << (ostream& stream, const Matrix& m);
 
 	Matrix transpose() const;
-	Matrix getL();
-	Matrix getU();
-	//hasn't implemented
-	Matrix pivoting();
 	//use gauss-jordan method
 	Matrix inverse();
 
@@ -60,15 +56,11 @@ class Matrix
 
 	void swapRow(unsigned int i, unsigned int j);
 	void swapCol(unsigned int i, unsigned int j);
-	void GaussElimitation(); 
-	void GaussElimitationPivot(); 
 
     private:
 	MatrixVector matrixVector;
 	unsigned int row;
 	unsigned int col;
-	//implement copy later;
-	LUDecomposition *luDecomposition;
 };
 
 class LUDecomposition

@@ -372,9 +372,14 @@ int main()
     assert(!van.isUpperTriangle());
     assert(!van.isLowerTriangle());
     assert(van.isSquare());
-    //GaussElimitation();
-    Matrix vl = van.getL();
-    Matrix vu = van.getU();
+    LinearEquationSolver vansolver;
+    vansolver.setLhsMatrix(van);
+    vansolver.setRhsVector(v2);
+    cout << "solve van and vanvector\n";
+    cout << vansolver.solve() << endl;
+    //vansolver.GaussElimitation();
+    Matrix vl = vansolver.getL();
+    Matrix vu = vansolver.getU();
     cout << " van's lower triangle matrix\n";
     cout << vl;
     cout << " van's upper triangle matrix\n";
@@ -401,9 +406,12 @@ int main()
     assert(!trickym.isUpperTriangle());
     assert(!trickym.isLowerTriangle());
     assert(trickym.isSquare());
-    trickym.GaussElimitation();
-    vl = trickym.getL();
-    vu = trickym.getU();
+    LinearEquationSolver trickySolver;
+    trickySolver.setLhsMatrix(trickym);
+    trickySolver.setRhsVector(trickrhs);
+    trickySolver.solve();
+    vl = trickySolver.getL();
+    vu = trickySolver.getU();
     cout << trickym;
     cout << " trickym's lower triangle matrix\n";
     cout << vl;
@@ -411,10 +419,8 @@ int main()
     cout << vu;
     cout << " trickym's \n";
     cout << vl * vu << endl;
-    lSolver2.setLhsMatrix(trickym);
-    lSolver2.setRhsVector(trickrhs);
     cout << "result is !trickym's \n";
-    cout << lSolver2.solve() << endl;
+    cout << trickySolver.solve() << endl;
 
     cout << " van\n";
     cout << van;

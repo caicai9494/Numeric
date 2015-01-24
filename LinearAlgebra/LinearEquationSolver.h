@@ -29,8 +29,8 @@ class LinearEquationSolver
 	Matrix getL();
 	Matrix getU();
 
+	//using pivoting
 	void GaussElimitation();
-	void GaussElimitationPivot();
     private:
 	Matrix *lhsMatrix;
 	Vector *rhsVector;

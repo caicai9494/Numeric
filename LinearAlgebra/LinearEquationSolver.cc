@@ -95,8 +95,8 @@ Vector LinearEquationSolver::solve()
 	{
 	    GaussElimitation();
 
-	    Matrix L = lhsMatrix->getL();
-	    Matrix U = lhsMatrix->getU();
+	    Matrix L = getL();
+	    Matrix U = getU();
 
 	    LinearEquationSolver tempSolver;
 	    Matrix copy_lhs = L;
@@ -220,6 +220,27 @@ void LinearEquationSolver::GaussElimitation()
 
     for(unsigned int i = 0; i < row; i++)
     {
+
+        unsigned int max_r;
+        double max_val;
+        max_r = i;
+        max_val = (*lhsMatrix)[i][i];
+
+	for(unsigned int r = i; r < row; r++)
+	{
+	    if(max_val < (*lhsMatrix)[r][i])
+	    {
+		max_val = (*lhsMatrix)[r][i];
+		max_r = r;
+	    }
+	}
+
+	if(max_r != i)
+	{
+	    (*lhsMatrix).swapRow(max_r, i);
+	    (*rhsVector).swap(max_r, i);
+	}
+
 	for(unsigned int j = 0; j < i; j++)
 	{
 	    sum += L[i][j] * U[j][i];
