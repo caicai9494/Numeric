@@ -5,6 +5,7 @@ LinearEquationSolver::LinearEquationSolver()
 {
     lhsMatrix = NULL;
     rhsVector = NULL;
+    luDecomposition = NULL;
 }
 
 LinearEquationSolver::~LinearEquationSolver() 
@@ -15,6 +16,8 @@ LinearEquationSolver::~LinearEquationSolver()
     if(! rhsVector)
     delete rhsVector;
     */
+    if(!luDecomposition)
+	delete luDecomposition;
 }
 
 void LinearEquationSolver::setLhsMatrix(Matrix &m)
@@ -90,6 +93,24 @@ Vector LinearEquationSolver::solve()
 	    return solveUpperTriangle();
 	else
 	{
+	    GaussElimitation();
+
+	    Matrix L = lhsMatrix->getL();
+	    Matrix U = lhsMatrix->getU();
+
+	    LinearEquationSolver tempSolver;
+	    Matrix copy_lhs = L;
+	    Vector copy_rhs = *rhsVector;
+	    tempSolver.setLhsMatrix(copy_lhs);
+	    tempSolver.setRhsVector(copy_rhs);
+	    Vector rhs2 = tempSolver.solveLowerTriangle();
+	    copy_lhs = U;
+
+	    tempSolver.setLhsMatrix(copy_lhs);
+	    tempSolver.setRhsVector(rhs2);
+	    Vector res = tempSolver.solveUpperTriangle();
+	    return res;
+	    /*
 	    lhsMatrix->GaussElimitation();
 	    Matrix L = lhsMatrix->getL();
 	    Matrix U = lhsMatrix->getU();
@@ -106,6 +127,7 @@ Vector LinearEquationSolver::solve()
 	    temp.setRhsVector(rhs2);
 	    Vector res = temp.solveUpperTriangle();
 	    return res;
+	    */
 	}
     }
 }
@@ -171,3 +193,67 @@ Vector LinearEquationSolver::solveUpperTriangle()
     }
     return res;
 }
+Matrix LinearEquationSolver::getL()
+{
+    assert(luDecomposition != NULL);
+    return *(luDecomposition->LMatrix);
+}
+Matrix LinearEquationSolver::getU()
+{
+    assert(luDecomposition != NULL);
+    return *(luDecomposition->UMatrix);
+}
+void LinearEquationSolver::GaussElimitation()
+{
+    assert(lhsMatrix->isSquare());
+
+    if(luDecomposition != NULL)
+	delete luDecomposition;
+
+    unsigned int row = lhsMatrix->getRow();
+    Matrix L = Matrix::identity(row);
+    Matrix U = Matrix::zeros(row, row);
+
+    luDecomposition = new LUDecomposition(row);
+
+    double sum = 0;
+
+    for(unsigned int i = 0; i < row; i++)
+    {
+	for(unsigned int j = 0; j < i; j++)
+	{
+	    sum += L[i][j] * U[j][i];
+	}
+    
+	U[i][i] = (*lhsMatrix)[i][i] - sum;	
+	sum = 0;
+
+	for(unsigned int j = i + 1; j < row; j++)
+	{
+	    for(unsigned int k = 0; k < j; k++)
+	    {
+		sum += L[i][k] * U[k][j];
+	    }
+	    U[i][j] = (*lhsMatrix)[i][j] - sum;
+	    sum = 0;
+	}
+
+	for(unsigned int j = i + 1; j < row; j++)
+	{
+	    for(unsigned int k = 0; k < j; k++)
+	    {
+		sum += L[j][k] * U[k][i];
+	    }
+
+	    if(!U[i][i])
+		throw runtime_error("Cannot solve: Try pivoting or singular matrix\n");
+
+	    L[j][i] = ((*lhsMatrix)[j][i] - sum) / U[i][i];
+	    sum = 0;
+	}
+    }
+
+    luDecomposition->LMatrix = new Matrix(L);
+    luDecomposition->UMatrix = new Matrix(U);
+} 
+

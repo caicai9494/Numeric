@@ -20,13 +20,22 @@ class LinearEquationSolver
 
 	bool isHomogeneous();
 
-	//delete local copy of matrix and vector
+	//delete Matrix and vector yourself
+	//delete luDecomposition
 	~LinearEquationSolver();
 
 	friend ostream& operator<<(ostream &stream, LinearEquationSolver& lSolver);
+
+	Matrix getL();
+	Matrix getU();
+
+	void GaussElimitation();
+	void GaussElimitationPivot();
     private:
 	Matrix *lhsMatrix;
 	Vector *rhsVector;
+	LUDecomposition *luDecomposition;
+
 	bool isLegalEquation();
 
 	LinearEquationSolver& operator= (const LinearEquationSolver&) {}
@@ -34,6 +43,7 @@ class LinearEquationSolver
 	Vector solveUpperTriangle();
 	Vector solveLowerTriangle();
 	Vector solveDiagonal();
+
 };
 
 #endif

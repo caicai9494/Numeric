@@ -39,6 +39,7 @@ class Matrix
 	Matrix transpose() const;
 	Matrix getL();
 	Matrix getU();
+	//hasn't implemented
 	Matrix pivoting();
 	//use gauss-jordan method
 	Matrix inverse();
