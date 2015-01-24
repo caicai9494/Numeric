@@ -372,7 +372,7 @@ int main()
     assert(!van.isUpperTriangle());
     assert(!van.isLowerTriangle());
     assert(van.isSquare());
-    van.GaussElimitation();
+    //GaussElimitation();
     Matrix vl = van.getL();
     Matrix vu = van.getU();
     cout << " van's lower triangle matrix\n";
