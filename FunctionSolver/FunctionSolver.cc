@@ -2,7 +2,7 @@
 
 void FunctionSolver::printConditions()
 {
-    cout << "///////////////////////\n";
+    cout << endl;
     cout << "Ignorance : ";
     cout << ignorance << endl;
     cout << "Precision : ";

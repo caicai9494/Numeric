@@ -506,7 +506,7 @@ int main()
     cout << newtonIntp2 << endl;
 
     NewtonInterpolation newtonIntp3;
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 40; i++)
     {
 	static double args= -1;
 	args += 0.2 * i;
@@ -515,7 +515,7 @@ int main()
 	Point2D temp(args, val);
 	newtonIntp3.addPoint(temp);
     }
-    cout << newtonIntp3 << endl;
+    //cout << newtonIntp3 << endl;
 
     double argfunc = 0.5;
     cout << "real value:\n";
@@ -536,7 +536,7 @@ int main()
     assert(lIntp1.interpolate(p4.x) == p4.y);
 
     LagrangeInterpolation lIntp2;
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 40; i++)
     {
 	static double args= -1;
 	args += 0.2 * i;
@@ -552,7 +552,7 @@ int main()
     cout << "interpolated value:\n";
     cout << lIntp2.interpolate(argfunc);
     cout << endl;
-    cout << lIntp2 << endl;
+    //cout << lIntp2 << endl;
     
 #endif
     return 0;
