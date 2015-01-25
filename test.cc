@@ -9,8 +9,8 @@
 #include <vector>
 #include <algorithm>
 
-#define TEST_MATRIX 0
-#define TEST_FUNC 0
+#define TEST_MATRIX 1
+#define TEST_FUNC 1
 #define TEST_INTP 1
 
 using namespace std; 
@@ -506,7 +506,7 @@ int main()
     cout << newtonIntp2 << endl;
 
     NewtonInterpolation newtonIntp3;
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < 4; i++)
     {
 	static double args= -1;
 	args += 0.2 * i;
