@@ -3,6 +3,9 @@
 #include <iostream>
 #include <cassert>
 #include <stdexcept>
+#include <string>
+
+using namespace std;
 
 
 class Function
@@ -10,6 +13,10 @@ class Function
     public:
 	virtual ~Function() = 0;
 	virtual double invokeFunction(double *para, unsigned int N) const;
+	void setFunctionString(string s);
+	string toString();
+    private:
+	string functionString;
 };
 
 class Function1v: public Function
@@ -25,5 +32,6 @@ class Function1v: public Function
 	FuncPtr funcPtr;
 	Function1v& operator= (const Function1v&) {}
 	Function1v(const Function1v&) {}
+	
 };
 #endif

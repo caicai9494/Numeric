@@ -53,14 +53,17 @@ int main()
     // y = 1 / x
     Function1v func2v;
     func2v.setFuncPtr(&func);
+    func2v.setFunctionString("Y = 1 / x");
 
     // y = 2x + 5
     Function1v func3v;
     func3v.setFuncPtr(&func2);
+    func3v.setFunctionString("y = 2x + 5");
 
     //solve x - sinx = 0
     Function1v func4v;
     func4v.setFuncPtr(&func3);
+    func4v.setFunctionString("y = x - sinx");
 
     BisectionFunctionSolver *bSolver2 = new BisectionFunctionSolver();
     bSolver2->setFunction(&func2v);
@@ -75,44 +78,24 @@ int main()
     BisectionFunctionSolver *bSolver3 = new BisectionFunctionSolver();
     bSolver3->setFunction(&func2v);
     assert(bSolver3->isSetUp() == false);
-    bSolver3->setIgnorance(0.00001);
+    bSolver3->setIgnorance(0.1);
     bSolver3->setIteration(100);
     bSolver3->setBound(-10, 20);
+    bSolver3->setPrecision(0.1);
+    bSolver3->setSegment(10);
     assert(bSolver3->isSetUp() == true);
-    //cout << bSolver3->evaluateFunction(0) << endl;
-    //cout << bSolver3->evaluateFunction(3) << endl;
     
     end_timer();
     start_timer();
+    bSolver3->solve();
     cout << endl;
-    cout << "bisection method!!\n";
-    cout << "f(x) = 1 / x\n";
-    cout << bSolver3->BisectionMethod(false) << endl;
-    cout << "bisection method!! end\n";
-    cout << endl;
-    start_timer();
-    end_timer();
 
-    cout << "bisection method!!\n";
-    cout << "f(x) = 2x + 5\n";
     bSolver3->setFunction(&func3v);
-    cout << bSolver3->BisectionMethod(false) << endl;
-    cout << "bisection method!! end\n";
-
-    cout << "bisection method!!\n";
-    cout << "f(x) = x - sin(x)\n";
-    bSolver3->setFunction(&func4v);
-    cout << bSolver3->BisectionMethod(false) << endl;
-    cout << "bisection method!! end\n";
+    bSolver3->solve();
 
     bSolver3->setFunction(&func4v);
-    bSolver3->setIgnorance(0.0001);
-    bSolver3->setIteration(100);
-    bSolver3->setBound(-10, 11);
+    bSolver3->solve();
 
-    start_timer();
-    cout << bSolver3->BisectionMethod(false) << endl;
-    end_timer();
     delete bSolver3;
 
     assert(util::abs(5) == 5);
@@ -133,18 +116,12 @@ int main()
     nSolver1->setIgnorance(0.0001);
     nSolver1->setIteration(100);
     nSolver1->setBound(-10, 11);
+    nSolver1->setPrecision(0.001);
+    nSolver1->setSegment(10);
     assert(nSolver1->isSetUp() == true);
 
     start_timer();
-    try
-    {
-        cout << nSolver1->NewtonMethod(0.5, false) << endl;
-    }
-    catch(std::overflow_error &e)
-    {
-	std::cout << "standard exception :" << e.what(); 
-    }
-    end_timer();
+    nSolver1->solve();
     delete nSolver1;
 
     double val1, val2;
@@ -159,17 +136,12 @@ int main()
     sSolver1->setIgnorance(0.0001);
     sSolver1->setIteration(100);
     sSolver1->setBound(-10, 11);
+    sSolver1->setPrecision(0.0001);
+    sSolver1->setSegment(10);
     assert(sSolver1->isSetUp() == true);
 
     start_timer();
-    try
-    {
-        cout << sSolver1->SecandMethod(false) << endl;
-    }
-    catch(std::overflow_error &e)
-    {
-	std::cout << "standard exception :" << e.what(); 
-    }
+    sSolver1->solve();
     end_timer();
     delete sSolver1;
 #endif

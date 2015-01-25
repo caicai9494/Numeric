@@ -1,6 +1,23 @@
 #include "FunctionSolver.h"
-#include "Function.h"
 
+void FunctionSolver::printConditions()
+{
+    cout << "///////////////////////\n";
+    cout << "Ignorance : ";
+    cout << ignorance << endl;
+    cout << "Precision : ";
+    cout << precision << endl;
+    cout << "Interval  : [";
+    cout << setw(4) << setfill(' ') << lowerBound;
+    cout << " ,";
+    cout << setw(4) << setfill(' ') << upperBound;
+    cout << " ]\n";
+    cout << "Segment   : ";
+    cout << segment << endl;
+    cout << "Iteration : ";
+    cout << iteration << endl;
+
+}
 FunctionSolver::FunctionSolver()
 {
     func = NULL;
@@ -61,26 +78,61 @@ double FunctionSolver::evaluateFunction(double para)
     return (func)->invokeFunction(&arg, sizeof(para) / sizeof(double));
 }
 
-double BisectionFunctionSolver::BisectionMethod(unsigned int s)
+void BisectionFunctionSolver::solve()
 {
+    cout << " Bisection Method solving " + func->toString() << endl;
     if(!isSetUp())
 	throw runtime_error("Bisection method: function not set up yet\n");
+    printConditions();
+    for(unsigned int s = 0; s < segment; s++)
+    {
+	double l, seg, result;
+	seg = (upperBound - lowerBound) / segment;
+	l = lowerBound + s * seg;
+
+	cout << "[ ";
+	cout << setw(4) << setfill(' ') << l;
+	cout << ", ";
+	cout << setw(4) << setfill(' ') << l + seg;
+	cout << " ]\n";
+
+	try
+	{
+	    result = BisectionMethod(s);
+	}
+	catch(overflow_error e)
+	{
+	    cout << "x = N/A" << endl;
+	    continue;
+	}
+
+	if(result < lowerBound)
+	    cout << "x = N/A" << endl;
+	else
+	{
+	    cout << "x = "; 
+	    cout << setw(4) << setfill(' ') << result << endl;
+	}
+    }
+}
+
+double BisectionFunctionSolver::BisectionMethod(unsigned int s)
+{
     
-    double interval, mid, lBound, uBound, lValue, uValue, mValue;
+    double seg, interval, mid, lBound, uBound, lValue, uValue, mValue;
     int i;
-    lBound = lowerBound;
-    uBound = upperBound;
-    interval = uBound - lBound;
+
+    seg = (upperBound - lowerBound) / segment;
+    lBound = lowerBound + s * seg;
+    uBound = lowerBound + (s+1) * seg;
+    interval = seg;
 
     //while(i < iteration && abs(mValue = evaluateFunction(mid)) < ignorance)
     lValue = evaluateFunction(lBound);
     uValue = evaluateFunction(uBound);
 
     if(util::sign(lValue) == util::sign(uValue))
-    {
-	cout << "No solution in the interval [" << lBound << ", " << uBound << "]\n";
 	return lowerBound - 1;
-    }
 
     for(i = 0; i < iteration; i++)
     {
@@ -90,13 +142,13 @@ double BisectionFunctionSolver::BisectionMethod(unsigned int s)
 	mValue = evaluateFunction(mid);
 
 	//judge when converge
-	if(util::abs(mValue) < ignorance)
+	if(util::abs(mValue) < precision)
 	    return mid;
 	if(interval < ignorance)
 	    return lowerBound - 1;
-	if(util::abs(lValue) < ignorance)
+	if(util::abs(lValue) < precision)
 	    return lValue;
-	if(util::abs(uValue) < ignorance)
+	if(util::abs(uValue) < precision)
 	    return uValue;
 
 	//update low or upper bound
@@ -110,11 +162,7 @@ double BisectionFunctionSolver::BisectionMethod(unsigned int s)
 	    lBound = mid;
 	    lValue = mValue;
 	}
-
-	if(!isSilent)
-	{
-	    std::cout << "At iteration " << i << " the function value at x = " << mid << " is " << mValue << endl;
-	}
+	//cout << "At iteration " << i << " the function value at x = " << mid << " is " << mValue << endl;
 
 	lValue = evaluateFunction(lBound);
 	uValue = evaluateFunction(uBound);
@@ -152,57 +200,128 @@ bool NewtonFunctionSolver::isSetUp()
     return FunctionSolver::isSetUp() && first_prime != NULL;
 }
 
-double NewtonFunctionSolver::NewtonMethod(double ini_x, bool isSilent)
+void NewtonFunctionSolver::solve()
+{
+    cout << " Newton Method solving " + func->toString() << endl;
+    if(!isSetUp())
+	throw runtime_error("Newton method: function not set up yet\n");
+
+    printConditions();
+    for(unsigned int s = 0; s < segment; s++)
+    {
+	double l, seg, result;
+	seg = (upperBound - lowerBound) / segment;
+	l = lowerBound + (s + 0.5) * seg;
+
+	cout << "[ ";
+	cout << setw(4) << setfill(' ') << l;
+	cout << ", ";
+	cout << setw(4) << setfill(' ') << l + seg;
+	cout << " ]\n";
+
+	try
+	{
+	    result = NewtonMethod(s);
+	}
+	catch(overflow_error e)
+	{
+	    cout << "x = N/A" << endl;
+	    continue;
+	}
+
+	if(result < lowerBound)
+	    cout << "x = N/A" << endl;
+	else
+	{
+	    cout << "x = "; 
+	    cout << setw(4) << setfill(' ') << result << endl;
+	}
+    }
+}
+
+double NewtonFunctionSolver::NewtonMethod(double ini_x)
 {
 
-    if(isSetUp())
+    double fval;
+    double new_x;
+
+    fval = evaluateFunction(ini_x);
+
+    if(util::abs(fval) < precision)
     {
-	double fval;
-	double new_x;
-
-	fval = evaluateFunction(ini_x);
-	if(!isSilent)
-            std::cout << "At iteration " << 0 << " the function value at x = " << ini_x << " is " << fval << endl;
-	if(util::abs(fval) < ignorance)
-	{
-	    return ini_x;
-	}
-
-	for(int i = 0; i < iteration; i++)
-	{
-	    //double denominator = evaluateFirstPrime(ini_x);
-	    double denominator = first_prime->invokeFunction(&ini_x, 1);
-	    if(denominator == 0) 
-		throw(overflow_error("zero division\n"));
-
-	    new_x = ini_x - fval / evaluateFirstPrime(ini_x); 
-	    
-	    fval = evaluateFunction(new_x);
-
-	    if(!isSilent)
-		std::cout << "At iteration " << i << " the function value at x = " << new_x << " is " << fval << endl;
-	    
-	    
-	    if(util::abs(new_x - ini_x) < ignorance || fval < ignorance)
-		break;
-
-	    ini_x = new_x;
-	}
-
-	return new_x;
+	return ini_x;
     }
+
+    for(int i = 0; i < iteration; i++)
+    {
+	//double denominator = evaluateFirstPrime(ini_x);
+	double denominator = first_prime->invokeFunction(&ini_x, 1);
+	if(denominator == 0) 
+	    throw(overflow_error("zero division\n"));
+
+	new_x = ini_x - fval / evaluateFirstPrime(ini_x); 
+
+	fval = evaluateFunction(new_x);
+
+	if(fval < ignorance)
+	    return new_x;
+	if(util::abs(new_x - ini_x) < ignorance)
+	    return lowerBound - 1;
+
+	ini_x = new_x;
+    }
+    return new_x;
 }
 
 SecantFunctionSolver::SecantFunctionSolver():FunctionSolver()
 {}
 SecantFunctionSolver::~SecantFunctionSolver()
 {}
-
-double SecantFunctionSolver::SecandMethod(bool isSilent)
+void SecantFunctionSolver::solve()
 {
-    double lBound, uBound, lValue, uValue, derivative, denominator; 
-    lBound = lowerBound;
-    uBound = upperBound;
+    cout << " Secant Method solving " + func->toString() << endl;
+    if(!isSetUp())
+	throw runtime_error("Secant method: function not set up yet\n");
+
+    printConditions();
+    for(unsigned int s = 0; s < segment; s++)
+    {
+	double l, seg, result;
+	seg = (upperBound - lowerBound) / segment;
+	l = lowerBound + (s + 0.5) * seg;
+
+	cout << "[ ";
+	cout << setw(4) << setfill(' ') << l;
+	cout << ", ";
+	cout << setw(4) << setfill(' ') << l + seg;
+	cout << " ]\n";
+
+	try
+	{
+	    result = SecandMethod(s);
+	}
+	catch(overflow_error e)
+	{
+	    cout << "x = N/A" << endl;
+	    continue;
+	}
+
+	if(result < lowerBound)
+	    cout << "x = N/A" << endl;
+	else
+	{
+	    cout << "x = "; 
+	    cout << setw(4) << setfill(' ') << result << endl;
+	}
+    }
+}
+
+double SecantFunctionSolver::SecandMethod(unsigned int s)
+{
+    double seg, lBound, uBound, lValue, uValue, derivative, denominator; 
+    seg = (upperBound - lowerBound) / segment;
+    lBound = lowerBound + s * seg;
+    uBound = lowerBound + (s+1) * seg;
 
     lValue = evaluateFunction(lBound);
     uValue = evaluateFunction(uBound);
@@ -226,12 +345,11 @@ double SecantFunctionSolver::SecandMethod(bool isSilent)
 	uBound -= uValue * derivative;
 	uValue = evaluateFunction(uBound);
 
-	if(!isSilent)
-            std::cout << "At iteration " << i << " the function value at x = " << uBound << " is " << uValue << endl;
 
-	if(util::abs(uValue) < ignorance || util::abs(uBound - lBound) < ignorance)
-	    break;
+	if(util::abs(uValue) < precision)
+	    return uBound;
+	if( util::abs(uBound - lBound) < ignorance)
+	    return lowerBound - 1;
     }
-
-    return uBound;
+    return lowerBound - 1;
 }

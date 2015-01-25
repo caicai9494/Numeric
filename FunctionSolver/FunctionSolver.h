@@ -3,6 +3,7 @@
 #include "Function.h"
 #include "../common/util.h"
 #include <cstdlib>
+#include <iomanip>
 
 using namespace std;
 
@@ -19,7 +20,7 @@ class FunctionSolver
 	void setSegment(unsigned int s);
 
 	virtual bool isSetUp();
-	virtual void solve();
+	virtual void solve(){}
 
     protected:
 	double lowerBound;
@@ -33,6 +34,7 @@ class FunctionSolver
 	Function *func;
 
 	double evaluateFunction(double para);
+	void printConditions();
 
     private:
 	bool isIterationSet;
@@ -53,6 +55,7 @@ class BisectionFunctionSolver: public FunctionSolver
 	void solve();
 	//If no solution in the boundry
 	//Return lowBound - 1
+    private:
 	double BisectionMethod(unsigned int s);
 };
 
@@ -61,14 +64,16 @@ class NewtonFunctionSolver: public FunctionSolver
     public:
 	NewtonFunctionSolver();
 	~NewtonFunctionSolver();
-	double NewtonMethod(double ini_x, bool isSilent = true);
 	void setFirstPrime(Function *func);
 	bool isSetUp();
 
+	void solve();
     private:
 	Function *first_prime;
 	//throw overflow_error when divide by zero
 	double evaluateFirstPrime(double val);
+	//get middle point for each interval
+	double NewtonMethod(double ini_x);
 };
 
 class SecantFunctionSolver: public FunctionSolver
@@ -78,7 +83,8 @@ class SecantFunctionSolver: public FunctionSolver
 	~SecantFunctionSolver();
 
 	//throw overflow_error when divide by zero
-	double SecandMethod(bool isSilent = true);
+	double SecandMethod(unsigned int s);
+	void solve();
 };
 
 #endif

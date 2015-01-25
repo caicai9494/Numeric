@@ -4,6 +4,14 @@ Function::~Function(){}
 
 double Function::invokeFunction(double *para, unsigned int N)const {}
 
+void Function::setFunctionString(string s)
+{
+    functionString = s;
+}
+string Function::toString()
+{
+    return functionString;
+}
 
 Function1v::Function1v()
 {
