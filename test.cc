@@ -3,11 +3,15 @@
 #include "LinearAlgebra/Matrix.h"
 #include "LinearAlgebra/Vector.h"
 #include "LinearAlgebra/LinearEquationSolver.h"
+#include "Approximating/Interpolation.h"
 #include "common/util.h"
 #include <cmath>
+#include <vector>
+#include <algorithm>
 
 #define TEST_MATRIX 0
-#define TEST_FUNC 1
+#define TEST_FUNC 0
+#define TEST_INTP 1
 
 using namespace std; 
 
@@ -458,7 +462,98 @@ int main()
     cout << invtricky;
     cout << "check\n";
     cout << invtricky * trickym;
+#endif
 
+#if(TEST_INTP)
+    typedef vector<Point2D*> PointVector;
+    typedef vector<Point2D*>::iterator IT;
+    PointVector pVector;
+    pVector.push_back(new Point2D(1,2));
+    pVector.push_back(new Point2D(3,2));
+    pVector.push_back(new Point2D(-3,2));
+    sort(pVector.begin(), pVector.end(), less<Point2D*>());
+
+    for(int i = 0; i < 3; i++)
+	cout << *(pVector.at(i));
+    for(IT it = pVector.begin(); it != pVector.end(); it++)
+	delete *it;
+
+    NewtonInterpolation newtonIntp;
+    Point2D p1(5, 1);
+    Point2D p2(-7, -23);
+    Point2D p3(-6, -54);
+    Point2D p4(0, -954);
+    newtonIntp.addPoint(p1);
+    newtonIntp.addPoint(p2);
+    newtonIntp.addPoint(p3);
+    newtonIntp.addPoint(p4);
+    assert(newtonIntp.interpolate(0) == -954);
+    assert(newtonIntp.interpolate(5) == 1);
+    assert(newtonIntp.interpolate(-7) == -23);
+    assert(newtonIntp.interpolate(-6) == -54);
+
+    NewtonInterpolation newtonIntp2;
+    vector<Point2D> pV;
+    pV.push_back(p1);
+    pV.push_back(p2);
+    pV.push_back(p3);
+    pV.push_back(p4);
+    newtonIntp2.addPointArray(pV);
+    assert(newtonIntp2.interpolate(0) == -954);
+    assert(newtonIntp2.interpolate(5) == 1);
+    assert(newtonIntp2.interpolate(-7) == -23);
+    assert(newtonIntp2.interpolate(-6) == -54);
+    cout << newtonIntp2 << endl;
+
+    NewtonInterpolation newtonIntp3;
+    for(int i = 0; i < 10; i++)
+    {
+	static double args= -1;
+	args += 0.2 * i;
+	double val = func3(&args, 1);
+
+	Point2D temp(args, val);
+	newtonIntp3.addPoint(temp);
+    }
+    cout << newtonIntp3 << endl;
+
+    double argfunc = 0.5;
+    cout << "real value:\n";
+    cout << func3(&argfunc, 1);
+    cout << endl;
+    cout << "interpolated value:\n";
+    cout << newtonIntp3.interpolate(argfunc);
+    cout << endl;
+
+    LagrangeInterpolation lIntp1;
+    lIntp1.addPoint(p1);
+    lIntp1.addPoint(p2);
+    lIntp1.addPoint(p3);
+    lIntp1.addPoint(p4);
+    assert(lIntp1.interpolate(p1.x) == p1.y);
+    assert(lIntp1.interpolate(p2.x) == p2.y);
+    assert(lIntp1.interpolate(p3.x) == p3.y);
+    assert(lIntp1.interpolate(p4.x) == p4.y);
+
+    LagrangeInterpolation lIntp2;
+    for(int i = 0; i < 4; i++)
+    {
+	static double args= -1;
+	args += 0.2 * i;
+	double val = func3(&args, 1);
+
+	Point2D temp(args, val);
+	lIntp2.addPoint(temp);
+    }
+    //double argfunc = 0.5;
+    cout << "real value:\n";
+    cout << func3(&argfunc, 1);
+    cout << endl;
+    cout << "interpolated value:\n";
+    cout << lIntp2.interpolate(argfunc);
+    cout << endl;
+    cout << lIntp2 << endl;
+    
 #endif
     return 0;
 }

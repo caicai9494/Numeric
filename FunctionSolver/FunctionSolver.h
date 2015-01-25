@@ -57,6 +57,9 @@ class BisectionFunctionSolver: public FunctionSolver
 	//Return lowBound - 1
     private:
 	double BisectionMethod(unsigned int s);
+
+	BisectionFunctionSolver(const BisectionFunctionSolver&) {}
+	BisectionFunctionSolver& operator= (const BisectionFunctionSolver&) {}
 };
 
 class NewtonFunctionSolver: public FunctionSolver
@@ -74,6 +77,9 @@ class NewtonFunctionSolver: public FunctionSolver
 	double evaluateFirstPrime(double val);
 	//get middle point for each interval
 	double NewtonMethod(double ini_x);
+
+	NewtonFunctionSolver(const NewtonFunctionSolver&) {}
+	NewtonFunctionSolver& operator= (const NewtonFunctionSolver&) {}
 };
 
 class SecantFunctionSolver: public FunctionSolver
@@ -85,6 +91,9 @@ class SecantFunctionSolver: public FunctionSolver
 	//throw overflow_error when divide by zero
 	double SecandMethod(unsigned int s);
 	void solve();
+
+	SecantFunctionSolver(const SecantFunctionSolver&) {}
+	SecantFunctionSolver& operator= (const SecantFunctionSolver&) {}
 };
 
 #endif
