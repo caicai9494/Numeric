@@ -15,7 +15,7 @@ v1.0 is capable of
 Example:
 
 
-1. Lagrange and newton methods to interpolate y = x - sin(x) 
++ Lagrange and newton methods to interpolate y = x - sin(x) 
 
 LagrangeInterpolation 
 
@@ -60,11 +60,8 @@ f(x) =
 
 0.143179 *  ( x + 1 )  ( x + 0.8 )  ( x + 0.4 ) 
 
-2. Secant Method to solve y = x^3 - x - 1  
 
-Secant Method solving y = x^3 - x - 1
-
-///////////////////////
++ Secant Method to solve y = x^3 - x - 1  
 
 Ignorance : 0.0001
 
@@ -117,7 +114,7 @@ x = 1.32472
 x = N/A
 
 
-3. Gauss elimination method to factorize LU  Matrix 
++ Gauss elimination method to factorize LU  Matrix 
 
 vandermonde matrix with vec5(3 4 5 6 7)
 
@@ -144,7 +141,7 @@ van's upper triangle matrix
         0           0           0           0     23.5547   
 
 
-4. Gauss-Jordan method's to solve matrix inverse 
++ Gauss-Jordan method's to solve matrix inverse 
 
 m =
 
@@ -156,11 +153,11 @@ m =
 
 inv(m) = 
 
-       35          15         -70         126        -105   
- -26.5833      -14.25     64.8333      -112.5        88.5   
-  7.45833     4.95833    -21.8333       36.25    -26.8333   
--0.916667       -0.75     3.16667          -5         3.5   
-0.0416667   0.0416667   -0.166667        0.25   -0.166667   
+           35          15         -70         126        -105   
+    - 26.5833      -14.25     64.8333      -112.5        88.5   
+      7.45833     4.95833    -21.8333       36.25    -26.8333   
+    -0.916667       -0.75     3.16667          -5         3.5   
+    0.0416667   0.0416667   -0.166667        0.25   -0.166667   
 
 m * inv(m) =
 
