@@ -4,24 +4,27 @@ Numerical Analysis Project
 I learned numerical analysis algorithms in 2014 spring. The class used matlab to implement those algorithms. I came up the idea to make a numerical analysis software package in C++ as a project to practice.
 
 v1.0 is capable of 
-1. approximating function via polynominal interpolation 
-2. solving nonlinear equation via iteration methods 
-3. solving matrix inverse and linear equations
+1. approximating function via polynominal interpolation \n
+2. solving nonlinear equation via iteration methods \n
+3. solving matrix inverse and linear equations\n
 
-Example:
 
-1. Lagrange and newton methods to interpolate y = x - sin(x)
+Example:\n
 
-LagrangeInterpolation
-f(x) = 
 
--0.158529 *  ( x + 0.8 )  ( x + 0.4 )  ( x - 0.2 ) 
------------------------------------------------------------- + 
- ( -1 + 0.8 )  ( -1 + 0.4 )  ( -1 - 0.2 ) 
+1. Lagrange and newton methods to interpolate y = x - sin(x) \n
 
--0.0826439 *  ( x + 1 )  ( x + 0.4 )  ( x - 0.2 ) 
------------------------------------------------------------- + 
- ( -0.8 + 1 )  ( -0.8 + 0.4 )  ( -0.8 - 0.2 ) 
+LagrangeInterpolation \n
+f(x) = \n
+
+-0.158529 *  ( x + 0.8 )  ( x + 0.4 )  ( x - 0.2 ) \n
+------------------------------------------------------------ + \n
+ ( -1 + 0.8 )  ( -1 + 0.4 )  ( -1 - 0.2 ) \n
+
+
+-0.0826439 *  ( x + 1 )  ( x + 0.4 )  ( x - 0.2 ) \n
+------------------------------------------------------------ + \n
+ ( -0.8 + 1 )  ( -0.8 + 0.4 )  ( -0.8 - 0.2 )\n 
 
 -0.0105817 *  ( x + 1 )  ( x + 0.8 )  ( x - 0.2 ) 
 ------------------------------------------------------------ + 
