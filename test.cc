@@ -23,6 +23,9 @@ double func3(double *para, unsigned int N);
 // y = 1 - cos(x);
 double func3_prime(double *para, unsigned int N);
 
+// y = x^3 - x - 1;
+double func4(double *para, unsigned int N);
+
 int main()
 {
 
@@ -64,6 +67,11 @@ int main()
     Function1v func4v;
     func4v.setFuncPtr(&func3);
     func4v.setFunctionString("y = x - sinx");
+
+    //solve x^3 - x - 1 = 0
+    Function1v func5v;
+    func5v.setFuncPtr(&func4);
+    func5v.setFunctionString("y = x^3 - x - 1");
 
     BisectionFunctionSolver *bSolver2 = new BisectionFunctionSolver();
     bSolver2->setFunction(&func2v);
@@ -117,10 +125,12 @@ int main()
     nSolver1->setIteration(100);
     nSolver1->setBound(-10, 11);
     nSolver1->setPrecision(0.001);
-    nSolver1->setSegment(10);
+    nSolver1->setSegment(2);
     assert(nSolver1->isSetUp() == true);
 
     start_timer();
+    nSolver1->solve();
+    nSolver1->setFunction(&func5v);
     nSolver1->solve();
     delete nSolver1;
 
@@ -143,6 +153,9 @@ int main()
     start_timer();
     sSolver1->solve();
     end_timer();
+
+    sSolver1->setFunction(&func5v);
+    sSolver1->solve();
     delete sSolver1;
 #endif
     
@@ -468,4 +481,8 @@ double func3(double *para, unsigned int N)
 double func3_prime(double *para, unsigned int N)
 {
     return 1 - cos(*para);
+}
+double func4(double *para, unsigned int N)
+{
+    return (*para) * (*para) * (*para) - (*para) - 1;
 }

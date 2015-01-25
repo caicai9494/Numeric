@@ -11,7 +11,7 @@ void FunctionSolver::printConditions()
     cout << setw(4) << setfill(' ') << lowerBound;
     cout << " ,";
     cout << setw(4) << setfill(' ') << upperBound;
-    cout << " ]\n";
+    cout << " ] (Interval only means where it begins iterating)\n";
     cout << "Segment   : ";
     cout << segment << endl;
     cout << "Iteration : ";
@@ -211,7 +211,7 @@ void NewtonFunctionSolver::solve()
     {
 	double l, seg, result;
 	seg = (upperBound - lowerBound) / segment;
-	l = lowerBound + (s + 0.5) * seg;
+	l = lowerBound + s * seg;
 
 	cout << "[ ";
 	cout << setw(4) << setfill(' ') << l;
@@ -221,7 +221,7 @@ void NewtonFunctionSolver::solve()
 
 	try
 	{
-	    result = NewtonMethod(s);
+	    result = NewtonMethod(s + seg / 2);
 	}
 	catch(overflow_error e)
 	{
@@ -248,9 +248,7 @@ double NewtonFunctionSolver::NewtonMethod(double ini_x)
     fval = evaluateFunction(ini_x);
 
     if(util::abs(fval) < precision)
-    {
 	return ini_x;
-    }
 
     for(int i = 0; i < iteration; i++)
     {
@@ -288,7 +286,7 @@ void SecantFunctionSolver::solve()
     {
 	double l, seg, result;
 	seg = (upperBound - lowerBound) / segment;
-	l = lowerBound + (s + 0.5) * seg;
+	l = lowerBound + s * seg;
 
 	cout << "[ ";
 	cout << setw(4) << setfill(' ') << l;
@@ -320,8 +318,9 @@ double SecantFunctionSolver::SecandMethod(unsigned int s)
 {
     double seg, lBound, uBound, lValue, uValue, derivative, denominator; 
     seg = (upperBound - lowerBound) / segment;
+
     lBound = lowerBound + s * seg;
-    uBound = lowerBound + (s+1) * seg;
+    uBound = lowerBound + seg;
 
     lValue = evaluateFunction(lBound);
     uValue = evaluateFunction(uBound);
