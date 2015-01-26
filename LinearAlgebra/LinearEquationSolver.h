@@ -30,6 +30,7 @@ class LinearEquationSolver
 	Matrix getU();
 
 	//using pivoting
+	//throw runtime_error if zeros at diagonal cannot be solved
 	void GaussElimitation();
     private:
 	Matrix *lhsMatrix;
@@ -38,7 +39,7 @@ class LinearEquationSolver
 
 	bool isLegalEquation();
 
-	LinearEquationSolver& operator= (const LinearEquationSolver&) {}
+	LinearEquationSolver& operator= (const LinearEquationSolver&);
 
 	Vector solveUpperTriangle();
 	Vector solveLowerTriangle();

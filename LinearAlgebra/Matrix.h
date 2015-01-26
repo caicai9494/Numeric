@@ -46,6 +46,7 @@ class Matrix
 
 	static Matrix zeros(unsigned int r, unsigned int c);
 	static Matrix identity(unsigned int r);
+	//throw runtime_error if v invalid
 	static Matrix vandermonde(const Vector &v);
 
 	bool isUpperTriangle();
@@ -75,7 +76,7 @@ class LUDecomposition
     private:
 
 	LUDecomposition(const LUDecomposition &lu) {}
-	LUDecomposition& operator= (const LUDecomposition &lu) {}
+	LUDecomposition& operator= (const LUDecomposition &lu);
 };
 
 #endif

@@ -432,6 +432,7 @@ LUDecomposition::~LUDecomposition()
     if(permutation)
         delete []permutation;
 }
+LUDecomposition& LUDecomposition::operator= (const LUDecomposition &lu) {return *this;}
 
 
 

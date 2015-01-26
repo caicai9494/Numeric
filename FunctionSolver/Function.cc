@@ -2,7 +2,7 @@
 
 Function::~Function(){}
 
-double Function::invokeFunction(double *para, unsigned int N)const {}
+double Function::invokeFunction(double *para, unsigned int N)const {return 0;}
 
 void Function::setFunctionString(string s)
 {
@@ -21,6 +21,10 @@ Function1v::~Function1v()
 {
     funcPtr = NULL;
 }
+Function1v& Function1v::operator= (const Function1v&)
+{
+    return *this;
+}
 void Function1v::setFuncPtr(FuncPtr fPtr)
 {
     if(&funcPtr != NULL)
@@ -31,12 +35,5 @@ double Function1v::invokeFunction(double *para, unsigned int N) const
 {
     assert(funcPtr != NULL);
 
-    try
-    {
-	return (*funcPtr)(para, N);
-    }
-    catch(std::overflow_error &e)
-    {
-	std::cout << "standard exception :" << e.what(); 
-    }
+    return (*funcPtr)(para, N);
 }

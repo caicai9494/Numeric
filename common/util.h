@@ -5,9 +5,6 @@
 
 using namespace std;
 
-static clock_t start_time = 0;
-
-
 namespace util
 {
 
@@ -33,7 +30,4 @@ namespace util
     }
 
 }
-
-void start_timer();
-void end_timer();
 #endif

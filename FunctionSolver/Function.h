@@ -26,12 +26,12 @@ class Function1v: public Function
 	Function1v();
 	~Function1v(); 
 	void setFuncPtr(FuncPtr fPtr);
+	//throw overflow_error if divide by zero
 	virtual double invokeFunction(double *para, unsigned int N = 1) const;
     private:
 	//check denominator and throw overflow_error if it is zero
 	FuncPtr funcPtr;
-	Function1v& operator= (const Function1v&) {}
+	Function1v& operator= (const Function1v&) ;
 	Function1v(const Function1v&) {}
-	
 };
 #endif

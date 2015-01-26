@@ -26,8 +26,8 @@ Interpolation::~Interpolation(){}
 void Interpolation::addPoint(Point2D p){}
 void Interpolation::addPointArray(vector<Point2D> pVec){}
 void Interpolation::deletePoint(Point2D p){}
-double Interpolation::interpolate(double x){}
-unsigned int Interpolation::pointSize()const {}
+double Interpolation::interpolate(double x){return 0;}
+unsigned int Interpolation::pointSize()const {return 0;}
 
 NewtonInterpolation::NewtonInterpolation():Interpolation()
 {
@@ -35,6 +35,7 @@ NewtonInterpolation::NewtonInterpolation():Interpolation()
 NewtonInterpolation::~NewtonInterpolation()
 {
 }
+NewtonInterpolation& NewtonInterpolation::operator= (const NewtonInterpolation&) {return *this;}
 
 void NewtonInterpolation::addPoint(Point2D p)
 {
@@ -110,6 +111,7 @@ ostream& operator<< (ostream& stream, const NewtonInterpolation& nitrp)
 
 LagrangeInterpolation::LagrangeInterpolation():Interpolation(){}
 LagrangeInterpolation::~LagrangeInterpolation(){}
+LagrangeInterpolation& LagrangeInterpolation::operator= (const LagrangeInterpolation&) {return *this;}
 unsigned int LagrangeInterpolation::pointSize() const
 {
     return pVector.size();
@@ -194,7 +196,7 @@ ostream& operator<< (ostream& stream, const LagrangeInterpolation& litrp)
 	    }
 	}
 	stream << endl;
-	for(int k = 0; k < litrp.pointSize(); k++)
+	for(unsigned int k = 0; k < litrp.pointSize(); k++)
 	    stream << "---------------";
 	stream << " + ";
 	stream << endl;

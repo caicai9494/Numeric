@@ -44,14 +44,16 @@ class LagrangeInterpolation: public Interpolation
 	void addPointArray(vector<Point2D> pVec);
 	unsigned int pointSize() const;
 
+	//throw runtime_error if cannot interpolate at x
 	double interpolate(double x);
 	friend ostream& operator<< (ostream& stream, const LagrangeInterpolation& litrp);
     private:
-	LagrangeInterpolation& operator= (const LagrangeInterpolation&) {}
+	LagrangeInterpolation& operator= (const LagrangeInterpolation&);
 	LagrangeInterpolation(const LagrangeInterpolation&) {}
 
 	PVector pVector;
 	dVector denominatorVector;
+	//throw runtime_error if points with same x value is inputed
 	void setupDenominator();
 };
 
@@ -67,6 +69,7 @@ class NewtonInterpolation: public Interpolation
 	void addPointArray(vector<Point2D> pVec);
 	unsigned int pointSize() const;
 
+	//throw runtime_error if not points inputed
 	double interpolate(double x);
 
 	friend ostream& operator<< (ostream& stream, const NewtonInterpolation& nitrp);
@@ -74,7 +77,7 @@ class NewtonInterpolation: public Interpolation
 	dVector coeffArray;
 	dVector xArray;
 
-	NewtonInterpolation& operator= (const NewtonInterpolation&) {}
+	NewtonInterpolation& operator= (const NewtonInterpolation&);
 	NewtonInterpolation(const NewtonInterpolation&) {}
 };
 #endif

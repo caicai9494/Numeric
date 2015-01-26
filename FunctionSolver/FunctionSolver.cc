@@ -116,11 +116,11 @@ void BisectionFunctionSolver::solve()
     }
 }
 
+BisectionFunctionSolver& BisectionFunctionSolver::operator= (const BisectionFunctionSolver&) {return *this;}
 double BisectionFunctionSolver::BisectionMethod(unsigned int s)
 {
     
     double seg, interval, mid, lBound, uBound, lValue, uValue, mValue;
-    int i;
 
     seg = (upperBound - lowerBound) / segment;
     lBound = lowerBound + s * seg;
@@ -134,7 +134,7 @@ double BisectionFunctionSolver::BisectionMethod(unsigned int s)
     if(util::sign(lValue) == util::sign(uValue))
 	return lowerBound - 1;
 
-    for(i = 0; i < iteration; i++)
+    for(unsigned i = 0; i < iteration; i++)
     {
 	//update mid and midvalue if not converged
 	interval /= 2;
@@ -200,6 +200,7 @@ bool NewtonFunctionSolver::isSetUp()
     return FunctionSolver::isSetUp() && first_prime != NULL;
 }
 
+NewtonFunctionSolver& NewtonFunctionSolver::operator= (const NewtonFunctionSolver&) {return *this;}
 void NewtonFunctionSolver::solve()
 {
     cout << " Newton Method solving " + func->toString() << endl;
@@ -250,7 +251,7 @@ double NewtonFunctionSolver::NewtonMethod(double ini_x)
     if(util::abs(fval) < precision)
 	return ini_x;
 
-    for(int i = 0; i < iteration; i++)
+    for(unsigned int i = 0; i < iteration; i++)
     {
 	//double denominator = evaluateFirstPrime(ini_x);
 	double denominator = first_prime->invokeFunction(&ini_x, 1);
@@ -271,6 +272,7 @@ double NewtonFunctionSolver::NewtonMethod(double ini_x)
     return new_x;
 }
 
+SecantFunctionSolver& SecantFunctionSolver::operator= (const SecantFunctionSolver&) {return *this;}
 SecantFunctionSolver::SecantFunctionSolver():FunctionSolver()
 {}
 SecantFunctionSolver::~SecantFunctionSolver()
@@ -325,7 +327,7 @@ double SecantFunctionSolver::SecandMethod(unsigned int s)
     lValue = evaluateFunction(lBound);
     uValue = evaluateFunction(uBound);
 
-    for(int i = 0; i < iteration - 2; i++)
+    for(unsigned int i = 0; i < iteration - 2; i++)
     {
 	if(util::abs(lValue) < util::abs(uValue))
 	{

@@ -59,8 +59,8 @@ Vector& Vector::operator = (const Vector &v)
 	    vector[i] = v[i];
 	}
     }
-    else
-	return *this;
+
+    return *this;
 }
 const double Vector::operator[](unsigned int i) const
 {
@@ -97,8 +97,6 @@ Matrix Vector::operator*(const Vector &v)
     assert(len == this->dim && !isRowVector && v.getIsRowVector());
 
     Matrix m(len, len);
-
-    double product = 0;
 
     for(unsigned int i = 0; i < len; i++)
     {

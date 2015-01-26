@@ -5,6 +5,7 @@
 #include "LinearAlgebra/LinearEquationSolver.h"
 #include "Approximating/Interpolation.h"
 #include "common/util.h"
+#include "common/Timer.h"
 #include <cmath>
 #include <vector>
 #include <algorithm>
@@ -37,7 +38,14 @@ int main()
     Function1v *func1v = new Function1v();
     func1v->setFuncPtr(&func);
     double arg = 0.0;
-    std::cout << func1v->invokeFunction(&arg) << endl;
+    try
+    {
+        std::cout << func1v->invokeFunction(&arg) << endl;
+    }
+    catch(overflow_error e)
+    {
+	std::cout << e.what() << endl;
+    }
 
     Function1v *func1v2 = new Function1v();
     func1v2->setFuncPtr(&func2);
@@ -96,9 +104,10 @@ int main()
     bSolver3->setPrecision(0.1);
     bSolver3->setSegment(10);
     assert(bSolver3->isSetUp() == true);
+
     
-    end_timer();
-    start_timer();
+    Timer::end_timer();
+    Timer::start_timer();
     bSolver3->solve();
     cout << endl;
 
@@ -132,7 +141,7 @@ int main()
     nSolver1->setSegment(2);
     assert(nSolver1->isSetUp() == true);
 
-    start_timer();
+    Timer::start_timer();
     nSolver1->solve();
     nSolver1->setFunction(&func5v);
     nSolver1->solve();
@@ -154,9 +163,9 @@ int main()
     sSolver1->setSegment(10);
     assert(sSolver1->isSetUp() == true);
 
-    start_timer();
+    Timer::start_timer();
     sSolver1->solve();
-    end_timer();
+    Timer::end_timer();
 
     sSolver1->setFunction(&func5v);
     sSolver1->solve();
@@ -383,9 +392,9 @@ int main()
     cout << lSolver2;
     assert(!lSolver2.isHomogeneous());
     cout << " result is\n";
-    start_timer();
+    Timer::start_timer();
     cout << lSolver2.solve() << endl;
-    end_timer();
+    Timer::end_timer();
 
     Vector vanvector(3);
     vanvector[0] = 1;

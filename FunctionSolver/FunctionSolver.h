@@ -52,6 +52,7 @@ class BisectionFunctionSolver: public FunctionSolver
         BisectionFunctionSolver();  
 	~BisectionFunctionSolver();
 
+	//throw runtime_error if not setup yet
 	void solve();
 	//If no solution in the boundry
 	//Return lowBound - 1
@@ -59,7 +60,7 @@ class BisectionFunctionSolver: public FunctionSolver
 	double BisectionMethod(unsigned int s);
 
 	BisectionFunctionSolver(const BisectionFunctionSolver&) {}
-	BisectionFunctionSolver& operator= (const BisectionFunctionSolver&) {}
+	BisectionFunctionSolver& operator= (const BisectionFunctionSolver&);
 };
 
 class NewtonFunctionSolver: public FunctionSolver
@@ -70,16 +71,18 @@ class NewtonFunctionSolver: public FunctionSolver
 	void setFirstPrime(Function *func);
 	bool isSetUp();
 
+	//throw runtime_error if not setup yet
 	void solve();
     private:
 	Function *first_prime;
 	//throw overflow_error when divide by zero
 	double evaluateFirstPrime(double val);
 	//get middle point for each interval
+	//throw overflow_error when divide by zero
 	double NewtonMethod(double ini_x);
 
 	NewtonFunctionSolver(const NewtonFunctionSolver&) {}
-	NewtonFunctionSolver& operator= (const NewtonFunctionSolver&) {}
+	NewtonFunctionSolver& operator= (const NewtonFunctionSolver&);
 };
 
 class SecantFunctionSolver: public FunctionSolver
@@ -90,10 +93,11 @@ class SecantFunctionSolver: public FunctionSolver
 
 	//throw overflow_error when divide by zero
 	double SecandMethod(unsigned int s);
+	//throw runtime_error if not setup yet
 	void solve();
 
-	SecantFunctionSolver(const SecantFunctionSolver&) {}
-	SecantFunctionSolver& operator= (const SecantFunctionSolver&) {}
+	SecantFunctionSolver(const SecantFunctionSolver&){};
+	SecantFunctionSolver& operator= (const SecantFunctionSolver&);
 };
 
 #endif

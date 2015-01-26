@@ -1,6 +1,7 @@
 #include "LinearEquationSolver.h"
 
 
+LinearEquationSolver& LinearEquationSolver::operator= (const LinearEquationSolver&) {return *this;}
 LinearEquationSolver::LinearEquationSolver() 
 {
     lhsMatrix = NULL;
