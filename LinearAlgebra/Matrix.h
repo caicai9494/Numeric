@@ -10,73 +10,77 @@
 
 using namespace std;
 
-class Vector;
-class LUDecomposition;
-
-class Matrix
+namespace Numeric
 {
-    typedef vector<Vector*>MatrixVector;
-    public:
-	Matrix(unsigned int r, unsigned int c);
-	Matrix(const Matrix &m);
 
-	virtual ~Matrix();
+    class Vector;
+    class LUDecomposition;
 
-	const Vector& operator[](unsigned int r) const;
-	Vector& operator[](unsigned int r);
-	Matrix operator+ (const Matrix &m);
-	Matrix operator- (const Matrix &m);
-	//not yet done
-	Matrix operator* (const Matrix &m);
-	Matrix operator* (const double &num);
-	Vector operator* (const Vector &v);
-	Matrix& operator= (const Matrix &m);
-	bool operator== (const Matrix &m);
-	bool operator!= (const Matrix &m);
+    class Matrix
+    {
+	typedef vector<Vector*>MatrixVector;
+	public:
+	    Matrix(unsigned int r, unsigned int c);
+	    Matrix(const Matrix &m);
 
-	friend ostream& operator << (ostream& stream, const Matrix& m);
+	    virtual ~Matrix();
 
-	Matrix transpose() const;
-	//use gauss-jordan method
-	Matrix inverse();
+	    const Vector& operator[](unsigned int r) const;
+	    Vector& operator[](unsigned int r);
+	    Matrix operator+ (const Matrix &m);
+	    Matrix operator- (const Matrix &m);
+	    //not yet done
+	    Matrix operator* (const Matrix &m);
+	    Matrix operator* (const double &num);
+	    Vector operator* (const Vector &v);
+	    Matrix& operator= (const Matrix &m);
+	    bool operator== (const Matrix &m);
+	    bool operator!= (const Matrix &m);
 
-	unsigned int getRow() const;
-	unsigned int getCol() const;
-	unsigned int getR();
+	    friend ostream& operator << (ostream& stream, const Matrix& m);
 
-	static Matrix zeros(unsigned int r, unsigned int c);
-	static Matrix identity(unsigned int r);
-	//throw runtime_error if v invalid
-	static Matrix vandermonde(const Vector &v);
+	    Matrix transpose() const;
+	    //use gauss-jordan method
+	    Matrix inverse();
 
-	bool isUpperTriangle();
-	bool isLowerTriangle();
-	bool isDiagonal();
-	bool isSymmetric();
-	bool isSquare();
+	    unsigned int getRow() const;
+	    unsigned int getCol() const;
+	    unsigned int getR();
 
-	void swapRow(unsigned int i, unsigned int j);
-	void swapCol(unsigned int i, unsigned int j);
+	    static Matrix zeros(unsigned int r, unsigned int c);
+	    static Matrix identity(unsigned int r);
+	    //throw runtime_error if v invalid
+	    static Matrix vandermonde(const Vector &v);
 
-    private:
-	MatrixVector matrixVector;
-	unsigned int row;
-	unsigned int col;
-};
+	    bool isUpperTriangle();
+	    bool isLowerTriangle();
+	    bool isDiagonal();
+	    bool isSymmetric();
+	    bool isSquare();
 
-class LUDecomposition
-{
-    public:
-	LUDecomposition(unsigned int i);
-	~LUDecomposition();
+	    void swapRow(unsigned int i, unsigned int j);
+	    void swapCol(unsigned int i, unsigned int j);
 
-	Matrix *LMatrix;
-	Matrix *UMatrix;
-	unsigned int *permutation;
-    private:
+	private:
+	    MatrixVector matrixVector;
+	    unsigned int row;
+	    unsigned int col;
+    };
 
-	LUDecomposition(const LUDecomposition &lu) {}
-	LUDecomposition& operator= (const LUDecomposition &lu);
-};
+    class LUDecomposition
+    {
+	public:
+	    LUDecomposition(unsigned int i);
+	    ~LUDecomposition();
+
+	    Matrix *LMatrix;
+	    Matrix *UMatrix;
+	    unsigned int *permutation;
+	private:
+
+	    LUDecomposition(const LUDecomposition &lu) {}
+	    LUDecomposition& operator= (const LUDecomposition &lu);
+    };
+}
 
 #endif

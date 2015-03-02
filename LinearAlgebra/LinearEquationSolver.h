@@ -6,45 +6,49 @@
 
 using namespace std;
 
-class LinearEquationSolver
+namespace Numeric
 {
-    public:
-	LinearEquationSolver();
-        //Solve square non-singular matrix
-	//throw overflow_error is non-square or non-singular
-	Vector solve();
 
-	//local copy of matrix and vector
-	void setLhsMatrix(Matrix &m);
-	void setRhsVector(Vector &v);
+    class LinearEquationSolver
+    {
+	public:
+	    LinearEquationSolver();
+	    //Solve square non-singular matrix
+	    //throw overflow_error is non-square or non-singular
+	    Vector solve();
 
-	bool isHomogeneous();
+	    //local copy of matrix and vector
+	    void setLhsMatrix(Matrix &m);
+	    void setRhsVector(Vector &v);
 
-	//delete Matrix and vector yourself
-	//delete luDecomposition
-	~LinearEquationSolver();
+	    bool isHomogeneous();
 
-	friend ostream& operator<<(ostream &stream, LinearEquationSolver& lSolver);
+	    //delete Matrix and vector yourself
+	    //delete luDecomposition
+	    ~LinearEquationSolver();
 
-	Matrix getL();
-	Matrix getU();
+	    friend ostream& operator<<(ostream &stream, LinearEquationSolver& lSolver);
 
-	//using pivoting
-	//throw runtime_error if zeros at diagonal cannot be solved
-	void GaussElimitation();
-    private:
-	Matrix *lhsMatrix;
-	Vector *rhsVector;
-	LUDecomposition *luDecomposition;
+	    Matrix getL();
+	    Matrix getU();
 
-	bool isLegalEquation();
+	    //using pivoting
+	    //throw runtime_error if zeros at diagonal cannot be solved
+	    void GaussElimitation();
+	private:
+	    Matrix *lhsMatrix;
+	    Vector *rhsVector;
+	    LUDecomposition *luDecomposition;
 
-	LinearEquationSolver& operator= (const LinearEquationSolver&);
+	    bool isLegalEquation();
 
-	Vector solveUpperTriangle();
-	Vector solveLowerTriangle();
-	Vector solveDiagonal();
+	    LinearEquationSolver& operator= (const LinearEquationSolver&);
 
-};
+	    Vector solveUpperTriangle();
+	    Vector solveLowerTriangle();
+	    Vector solveDiagonal();
+
+    };
+}
 
 #endif

@@ -1,6 +1,12 @@
 #ifndef _CALCULUSSOLVER_H
 #define _CALCULUSSOLVER_H
-class CalculusSolver
+
+namespace Numeric
 {
-};
+
+    class CalculusSolver
+    {
+    };
+
+}
 #endif

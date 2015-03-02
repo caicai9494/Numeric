@@ -7,97 +7,101 @@
 
 using namespace std;
 
-class FunctionSolver
+namespace Numeric
 {
-    public:
-	FunctionSolver();
-	virtual ~FunctionSolver() = 0;
-	void setIteration(unsigned int itr);
-	void setIgnorance(double ign);
-	void setBound(double lb, double ub);
-	void setFunction(Function *f);
-	void setPrecision(double pre);
-	void setSegment(unsigned int s);
 
-	virtual bool isSetUp();
-	virtual void solve(){}
+    class FunctionSolver
+    {
+	public:
+	    FunctionSolver();
+	    virtual ~FunctionSolver() = 0;
+	    void setIteration(unsigned int itr);
+	    void setIgnorance(double ign);
+	    void setBound(double lb, double ub);
+	    void setFunction(Function *f);
+	    void setPrecision(double pre);
+	    void setSegment(unsigned int s);
 
-    protected:
-	double lowerBound;
-	double upperBound;
-	unsigned int iteration;
-	double ignorance;
-	double precision;
-	unsigned int segment;
+	    virtual bool isSetUp();
+	    virtual void solve(){}
 
-	//clean func yourself
-	Function *func;
+	protected:
+	    double lowerBound;
+	    double upperBound;
+	    unsigned int iteration;
+	    double ignorance;
+	    double precision;
+	    unsigned int segment;
 
-	double evaluateFunction(double para);
-	void printConditions();
+	    //clean func yourself
+	    Function *func;
 
-    private:
-	bool isIterationSet;
-	bool isIgnoranceSet;
-	bool isBoundSet;
-	bool isFunctionSet;
-	bool isSegmentSet;
-	bool isPrecisionSet;
+	    double evaluateFunction(double para);
+	    void printConditions();
 
-};
+	private:
+	    bool isIterationSet;
+	    bool isIgnoranceSet;
+	    bool isBoundSet;
+	    bool isFunctionSet;
+	    bool isSegmentSet;
+	    bool isPrecisionSet;
 
-class BisectionFunctionSolver: public FunctionSolver
-{
-    public:
-        BisectionFunctionSolver();  
-	~BisectionFunctionSolver();
+    };
 
-	//throw runtime_error if not setup yet
-	void solve();
-	//If no solution in the boundry
-	//Return lowBound - 1
-    private:
-	double BisectionMethod(unsigned int s);
+    class BisectionFunctionSolver: public FunctionSolver
+    {
+	public:
+	    BisectionFunctionSolver();  
+	    ~BisectionFunctionSolver();
 
-	BisectionFunctionSolver(const BisectionFunctionSolver&) {}
-	BisectionFunctionSolver& operator= (const BisectionFunctionSolver&);
-};
+	    //throw runtime_error if not setup yet
+	    void solve();
+	    //If no solution in the boundry
+	    //Return lowBound - 1
+	private:
+	    double BisectionMethod(unsigned int s);
 
-class NewtonFunctionSolver: public FunctionSolver
-{
-    public:
-	NewtonFunctionSolver();
-	~NewtonFunctionSolver();
-	void setFirstPrime(Function *func);
-	bool isSetUp();
+	    BisectionFunctionSolver(const BisectionFunctionSolver&) {}
+	    BisectionFunctionSolver& operator= (const BisectionFunctionSolver&);
+    };
 
-	//throw runtime_error if not setup yet
-	void solve();
-    private:
-	Function *first_prime;
-	//throw overflow_error when divide by zero
-	double evaluateFirstPrime(double val);
-	//get middle point for each interval
-	//throw overflow_error when divide by zero
-	double NewtonMethod(double ini_x);
+    class NewtonFunctionSolver: public FunctionSolver
+    {
+	public:
+	    NewtonFunctionSolver();
+	    ~NewtonFunctionSolver();
+	    void setFirstPrime(Function *func);
+	    bool isSetUp();
 
-	NewtonFunctionSolver(const NewtonFunctionSolver&) {}
-	NewtonFunctionSolver& operator= (const NewtonFunctionSolver&);
-};
+	    //throw runtime_error if not setup yet
+	    void solve();
+	private:
+	    Function *first_prime;
+	    //throw overflow_error when divide by zero
+	    double evaluateFirstPrime(double val);
+	    //get middle point for each interval
+	    //throw overflow_error when divide by zero
+	    double NewtonMethod(double ini_x);
 
-class SecantFunctionSolver: public FunctionSolver
-{
-    public:
-	SecantFunctionSolver();
-	~SecantFunctionSolver();
+	    NewtonFunctionSolver(const NewtonFunctionSolver&) {}
+	    NewtonFunctionSolver& operator= (const NewtonFunctionSolver&);
+    };
 
-	//throw overflow_error when divide by zero
-	double SecandMethod(unsigned int s);
-	//throw runtime_error if not setup yet
-	void solve();
+    class SecantFunctionSolver: public FunctionSolver
+    {
+	public:
+	    SecantFunctionSolver();
+	    ~SecantFunctionSolver();
 
-	SecantFunctionSolver(const SecantFunctionSolver&){};
-	SecantFunctionSolver& operator= (const SecantFunctionSolver&);
-};
+	    //throw overflow_error when divide by zero
+	    double SecandMethod(unsigned int s);
+	    //throw runtime_error if not setup yet
+	    void solve();
 
+	    SecantFunctionSolver(const SecantFunctionSolver&){};
+	    SecantFunctionSolver& operator= (const SecantFunctionSolver&);
+    };
+
+}
 #endif

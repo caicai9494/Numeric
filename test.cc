@@ -15,6 +15,8 @@
 #define TEST_INTP 1
 
 using namespace std; 
+using namespace Numeric; 
+
 
 // y = 1 / x
 double func(double *para, unsigned int N);
